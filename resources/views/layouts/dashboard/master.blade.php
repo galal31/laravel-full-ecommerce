@@ -45,15 +45,15 @@
 <body class="vertical-layout vertical-overlay-menu 2-columns menu-expanded fixed-navbar" data-open="click"
     data-menu="vertical-overlay-menu" data-col="2-columns">
 
-    @include('layouts.partials.navbar')
-    @include('layouts.partials.sidebar')
+    @include('layouts.dashboard.partials.navbar')
+    @include('layouts.dashboard.partials.sidebar')
     <div class="app-content content">
         <div class="content-wrapper">
             @yield('content')
         </div>
     </div>
 
-    @include('layouts.partials.footer')
+    @include('layouts.dashboard.partials.footer')
     <script src="{{ asset('dashboard-assets/app-assets/vendors/js/vendors.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('dashboard-assets/app-assets/js/core/app-menu.js') }}" type="text/javascript"></script>
     <script src="{{ asset('dashboard-assets/app-assets/js/core/app.js') }}" type="text/javascript"></script>

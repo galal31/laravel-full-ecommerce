@@ -5,7 +5,7 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Mcamara\LaravelLocalization\LaravelLocalization as McamaraLaravelLocalization;
 
 Route::get('/', function () {
-    return view('changelog');
+    return view('dashboard.login');
 });
 Route::group(
     [
