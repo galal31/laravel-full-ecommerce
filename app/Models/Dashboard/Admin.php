@@ -16,4 +16,21 @@ class Admin extends Authenticatable
     {
         $this->notify(new AdminResetPasswordNotification($token));
     }
+
+    //role
+    public function role(){
+        return $this->belongsTo(Role::class);
+    }
+
+    public function hasPermission($permession){
+        $role = $this->role;
+        // نلف علي صلاحياته لو البيرميشن فيها يرجع ترو
+        $database_permissions = $role->permissions;
+        foreach($database_permissions as $database_permission){
+            if($database_permission == $permession){
+                return true;
+            }
+        }
+        return false;
+    }
 }

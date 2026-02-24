@@ -179,8 +179,8 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'permissions.*' => [
+            'in' => 'One of the selected permissions is invalid or does not exist.',
         ],
     ],
 

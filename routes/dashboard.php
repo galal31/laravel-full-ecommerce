@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\dashboard\auth\AuthController;
+use App\Http\Controllers\dashboard\RolesController;
 use App\Http\Controllers\dashboard\WelcomeController;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -27,6 +28,13 @@ Route::group(
 
         Route::group(['middleware' => ['auth:admin']], function () {
             Route::get('/welcome',[WelcomeController::class,'index'])->name('welcome');
+            Route::prefix('roles')->middleware('can:roles')->group(function () {
+
+                Route::get('/',[RolesController::class,'index'])->name('roles.index');
+                Route::post('/store',[RolesController::class,'store'])->name('roles.store');
+                Route::put('/{id}/update', [RolesController::class, 'update'])->name('roles.update');
+                Route::delete('/{id}/destroy', [RolesController::class, 'destroy'])->name('roles.destroy');
+            });
         });
     }
 );
