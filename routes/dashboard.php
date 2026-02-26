@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\dashboard\AdminsController;
 use App\Http\Controllers\dashboard\auth\AuthController;
 use App\Http\Controllers\dashboard\RolesController;
 use App\Http\Controllers\dashboard\WelcomeController;
@@ -35,6 +36,11 @@ Route::group(
                 Route::put('/{id}/update', [RolesController::class, 'update'])->name('roles.update');
                 Route::delete('/{id}/destroy', [RolesController::class, 'destroy'])->name('roles.destroy');
             });
+
+            // admin routes
+            Route::PATCH('admins/{id}/toggleStatus', [AdminsController::class, 'toggleStatus'])->name('admins.toggleStatus');
+            Route::resource('admins',AdminsController::class)->middleware('can:admins');
+
         });
     }
 );

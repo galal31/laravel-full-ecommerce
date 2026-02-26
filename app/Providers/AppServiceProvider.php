@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Dashboard\Admin;
 use App\Models\Dashboard\Role;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -25,8 +26,8 @@ class AppServiceProvider extends ServiceProvider
     View::composer('dashboard.*', function ($view) {
 
         $roles = Role::count();
-
-        $view->with('dashboard_roles', $roles);
+        $admins_count = Admin::count();
+        $view->with(['dashboard_roles' => $roles, 'dashboard_admins_count' => $admins_count]);
     });
 
 

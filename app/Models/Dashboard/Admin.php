@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 class Admin extends Authenticatable
 {
     use Notifiable;
+    protected $fillable = ['name','email','password','role_id'];
     // عملنا اوفر رايت علي الفنكشن ال في ال تريت عشان نخلي الداله تستخدم كلاس الاشعارات الجديد
     // AdminResetPasswordNotification 
     public function sendPasswordResetNotification($token)

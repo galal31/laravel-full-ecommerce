@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'manage_admins' => 'Manage Admins',
+    'admins_list' => 'Admins List',
+    'add_new_admin' => 'Add New Admin',
+    'edit_admin' => 'Edit Admin Details',
+    'name' => 'Name',
+    'email' => 'Email',
+    'password' => 'Password',
+    'password_hint' => '(Leave empty if you do not want to change it)',
+    'role' => 'Role',
+    'choose_role' => 'Choose Role',
+    'status' => 'Status',
+    'active' => 'Active',
+    'inactive' => 'Inactive',
+    'no_role' => 'No Role',
+    'created_at' => 'Created At',
+    'actions' => 'Actions',
+    'edit' => 'Edit',
+    'delete' => 'Delete',
+    'confirm_delete' => 'Are you sure you want to delete this admin?',
+    'no_admins_found' => 'No admins found yet.',
+    'cancel' => 'Cancel',
+    'save' => 'Save',
+    'update' => 'Update Data',
+];

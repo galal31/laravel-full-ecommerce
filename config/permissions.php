@@ -1,7 +1,7 @@
 <?php
 
 return [
-
+    'admins'       => 'Manage Admins',
     'categories'   => 'Manage Categories',
     'brands'       => 'Manage Brands',
     'coupons'      => 'Manage Coupons',
