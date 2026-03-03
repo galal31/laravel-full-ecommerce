@@ -6,12 +6,13 @@
         <section class="flexbox-container">
             <div class="col-12">
                 <div class="card border-grey border-lighten-3 m-0">
-                    <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center">
-                        <h4 class="card-title">{{ __('admins.admins_list') }}</h4>
+                    <div class="card-header border-0 pb-0 d-flex flex-column flex-md-row justify-content-between align-items-center">
+                        <h4 class="card-title mb-2 mb-md-0">{{ __('admins.admins_list') }}</h4>
                         <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#createAdminModal">
                             <i class="ft-plus"></i> {{ __('admins.add_new_admin') }}
                         </button>
                     </div>
+                    
                     <div class="card-content">
                         <div class="card-body pb-0">
                             @include('layouts.dashboard.messages')
@@ -20,68 +21,70 @@
                         <div class="card-body pt-0">
                             <div id="ajax-alerts"></div>
 
-                            <table class="table table-striped table-bordered mt-2">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>{{ __('admins.name') }}</th>
-                                        <th>{{ __('admins.email') }}</th>
-                                        <th>{{ __('admins.role') }}</th>
-                                        <th>{{ __('admins.status') }}</th>
-                                        <th>{{ __('admins.created_at') }}</th>
-                                        <th>{{ __('admins.actions') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($admins as $admin)
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered mt-2 text-center">
+                                    <thead>
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $admin->name }}</td>
-                                            <td>{{ $admin->email }}</td>
-                                            <td>
-                                                <span class="badge badge-info">
-                                                    {{ $admin->role->name ?? __('admins.no_role') }}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <form action="{{ route('dashboard.admins.toggleStatus', $admin->id) }}" method="POST" class="d-inline toggle-form">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <button type="submit" 
-                                                            class="btn btn-sm status-btn {{ $admin->status ? 'btn-success' : 'btn-secondary' }}"
-                                                            data-status="{{ $admin->status ? '1' : '0' }}">
-                                                        {{ $admin->status ? __('admins.active') : __('admins.inactive') }}
+                                            <th>#</th>
+                                            <th>{{ __('admins.name') }}</th>
+                                            <th>{{ __('admins.email') }}</th>
+                                            <th>{{ __('admins.role') }}</th>
+                                            <th>{{ __('admins.status') }}</th>
+                                            <th>{{ __('admins.created_at') }}</th>
+                                            <th>{{ __('admins.actions') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($admins as $admin)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $admin->name }}</td>
+                                                <td>{{ $admin->email }}</td>
+                                                <td>
+                                                    <span class="badge badge-info">
+                                                        {{ $admin->role->name ?? __('admins.no_role') }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <form action="{{ route('dashboard.admins.toggleStatus', $admin->id) }}" method="POST" class="d-inline toggle-form">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" 
+                                                                class="btn btn-sm status-btn mb-1 mb-md-0 {{ $admin->status ? 'btn-success' : 'btn-secondary' }}"
+                                                                data-status="{{ $admin->status ? '1' : '0' }}">
+                                                            {{ $admin->status ? __('admins.active') : __('admins.inactive') }}
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                                <td>{{ $admin->created_at->format('Y-m-d') }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm btn-outline-warning edit-btn mb-1 mb-md-0"
+                                                        data-toggle="modal" data-target="#editAdminModal"
+                                                        data-id="{{ $admin->id }}" 
+                                                        data-name="{{ $admin->name }}"
+                                                        data-email="{{ $admin->email }}" 
+                                                        data-role="{{ $admin->role_id }}">
+                                                        <i class="ft-edit"></i>
                                                     </button>
-                                                </form>
-                                            </td>
-                                            <td>{{ $admin->created_at->format('Y-m-d') }}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-sm btn-outline-warning edit-btn"
-                                                    data-toggle="modal" data-target="#editAdminModal"
-                                                    data-id="{{ $admin->id }}" 
-                                                    data-name="{{ $admin->name }}"
-                                                    data-email="{{ $admin->email }}" 
-                                                    data-role="{{ $admin->role_id }}">
-                                                    <i class="ft-edit"></i>
-                                                </button>
 
-                                                <form action="{{ route('dashboard.admins.destroy', $admin->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                        onclick="return confirm('{{ __('admins.confirm_delete') }}')">
-                                                        <i class="ft-trash-2"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="7" class="text-center">{{ __('admins.no_admins_found') }}</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                                                    <form action="{{ route('dashboard.admins.destroy', $admin->id) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger mb-1 mb-md-0"
+                                                            onclick="return confirm('{{ __('admins.confirm_delete') }}')">
+                                                            <i class="ft-trash-2"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="7" class="text-center">{{ __('admins.no_admins_found') }}</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

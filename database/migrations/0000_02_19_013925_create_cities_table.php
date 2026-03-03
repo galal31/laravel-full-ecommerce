@@ -11,22 +11,15 @@ return new class extends Migration
      */
     public function up(): void
 {
-    Schema::create('governorates', function (Blueprint $table) {
+    Schema::create('cities', function (Blueprint $table) {
         $table->id();
-
-        $table->foreignId('country_id')
-              ->constrained('countries')
+        $table->string('name');
+        $table->boolean('status')->default(1);
+        $table->foreignId('governorate_id')
+              ->constrained('governorates')
               ->cascadeOnDelete();
 
-        $table->boolean('status')->default(1);
-
-        $table->integer('price');
-
-        $table->string('name');
-
         $table->timestamps();
-
-        $table->index('name');
     });
 }
 
@@ -36,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('governorates');
+        Schema::dropIfExists('shipping_cities');
     }
 };

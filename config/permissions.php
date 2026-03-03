@@ -2,6 +2,7 @@
 
 return [
     'admins'       => 'Manage Admins',
+    'world'        => 'Manage geographical data',
     'categories'   => 'Manage Categories',
     'brands'       => 'Manage Brands',
     'coupons'      => 'Manage Coupons',

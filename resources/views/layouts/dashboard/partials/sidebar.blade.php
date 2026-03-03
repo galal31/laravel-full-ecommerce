@@ -27,5 +27,24 @@
         </ul>
           
         @endcan
+        @can('world')
+        <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
+            <li class=" nav-item"><a href="index.html"><i class="la la-home"></i><span class="menu-title"
+                        data-i18n="nav.dash.main">Geography</span></a>
+                <ul class="menu-content">
+                    <li><a class="menu-item" href="{{ route('dashboard.countries.index') }}"
+                            data-i18n="nav.dash.ecommerce">Mangae Countries</a>
+                    </li>
+                    <li><a class="menu-item" href="{{ route('dashboard.governorates.index') }}"
+                            data-i18n="nav.dash.ecommerce">Mangae governorates</a>
+                    </li>
+                    <li><a class="menu-item" href="{{ route('dashboard.cities.index') }}"
+                            data-i18n="nav.dash.ecommerce">Mangae Cities</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+          
+        @endcan
     </div>
 </div>
