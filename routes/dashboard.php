@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\dashboard\AdminsController;
 use App\Http\Controllers\dashboard\auth\AuthController;
+use App\Http\Controllers\Dashboard\BrandController;
+use App\Http\Controllers\dashboard\CategoriesController;
 use App\Http\Controllers\dashboard\RolesController;
 use App\Http\Controllers\dashboard\WelcomeController;
 use App\Http\Controllers\dashboard\WorldController;
@@ -27,34 +29,51 @@ Route::group(
         });
 
         ######################## authentication routes ########################
-
+    
         Route::group(['middleware' => ['auth:admin']], function () {
-            Route::get('/welcome',[WelcomeController::class,'index'])->name('welcome');
+            Route::get('/welcome', [WelcomeController::class, 'index'])->name('welcome');
             Route::prefix('roles')->middleware('can:roles')->group(function () {
 
-                Route::get('/',[RolesController::class,'index'])->name('roles.index');
-                Route::post('/store',[RolesController::class,'store'])->name('roles.store');
+                Route::get('/', [RolesController::class, 'index'])->name('roles.index');
+                Route::post('/store', [RolesController::class, 'store'])->name('roles.store');
                 Route::put('/{id}/update', [RolesController::class, 'update'])->name('roles.update');
                 Route::delete('/{id}/destroy', [RolesController::class, 'destroy'])->name('roles.destroy');
             });
 
             // admin routes
             Route::PATCH('admins/{id}/toggleStatus', [AdminsController::class, 'toggleStatus'])->name('admins.toggleStatus');
-            Route::resource('admins',AdminsController::class)->middleware('can:admins');
+            Route::resource('admins', AdminsController::class)->middleware('can:admins');
 
 
             // world routes
-
-            Route::get('/countries',[WorldController::class,'getAllCountries'])->name('countries.index');
+    
+            Route::get('/countries', [WorldController::class, 'getAllCountries'])->name('countries.index');
             Route::PATCH('countries/{id}/toggleStatus', [WorldController::class, 'toggleStatus'])->name('countries.toggleStatus');
             // governorates routes
-            Route::get('/governorates/{country_id?}',[WorldController::class,'gettAllGovernorates'])->name('governorates.index');
+            Route::get('/governorates/{country_id?}', [WorldController::class, 'gettAllGovernorates'])->name('governorates.index');
             Route::PATCH('governorates/{id}/toggleStatus', [WorldController::class, 'toggleStatus'])->name('governorates.toggleStatus');
             Route::PATCH('governorates/{id}/changePrice', [WorldController::class, 'GovernorateChangePrice'])->name('governorates.changePrice');
             // cities routes
-            
-            Route::get('/cities/{governorate_id?}',[WorldController::class,'getAllCities'])->name('cities.index');
+    
+            Route::get('/cities/{governorate_id?}', [WorldController::class, 'getAllCities'])->name('cities.index');
             Route::PATCH('cities/{id}/toggleStatus', [WorldController::class, 'toggleStatus'])->name('cities.toggleStatus');
+
+
+            #### categories routes ####
+    
+            Route::resource('categories', CategoriesController::class)->middleware('can:categories');
+            Route::post('/categories/{id}/toggleStatus', [CategoriesController::class, 'toggleStatus'])->name('categories.toggleStatus');
+            #### end categories routes ####
+    
+
+            #### brands routes ####
+            Route::post('brands/{id}/toggle-status', [BrandController::class, 'toggleStatus'])->name('brands.toggleStatus');
+
+            // 2. راوتات الـ CRUD الأساسية للماركات
+            Route::resource('brands', BrandController::class)->except(['create', 'edit', 'show']);
+            #### end brands routes ####
+    
+
         });
     }
 );

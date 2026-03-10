@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'manage_brands'        => 'إدارة الماركات',
+    'brands_list'          => 'قائمة الماركات',
+    'add_new_brand'        => 'إضافة ماركة جديدة',
+    'edit_brand'           => 'تعديل الماركة',
+    'logo'                 => 'الشعار',
+    'name'                 => 'الاسم',
+    'name_ar'              => 'الاسم (بالعربية)',
+    'name_en'              => 'الاسم (بالإنجليزية)',
+    'slug'                 => 'الرابط (Slug)',
+    'status'               => 'الحالة',
+    'actions'              => 'الإجراءات',
+    'active'               => 'مفعل',
+    'inactive'             => 'غير مفعل',
+    'edit'                 => 'تعديل',
+    'delete'               => 'حذف',
+    'toggle_status'        => 'تغيير الحالة',
+    'leave_blank_to_keep'  => 'اتركه فارغاً للاحتفاظ بالصورة الحالية',
+    'added_successfully'   => 'تم إضافة الماركة بنجاح',
+    'updated_successfully' => 'تم تحديث الماركة بنجاح',
+    'deleted_successfully' => 'تم حذف الماركة بنجاح',
+    'status_updated'       => 'تم تغيير حالة الماركة بنجاح',
+];

@@ -3,6 +3,7 @@
 namespace App\Services\dashboard;
 
 use App\Reposetories\dashboard\AdminRepo;
+use Illuminate\Support\Facades\Cache;
 
 class AdminService
 {
@@ -29,6 +30,7 @@ class AdminService
         if(!$admin){
             return false;
         }
+        Cache::forget('dashboard_admins_count');
         return $admin;
     }
 
@@ -45,6 +47,7 @@ class AdminService
         if(!$admin){
             return false;
         }
+        Cache::forget('dashboard_admins_count');
         return $admin;
     }
 

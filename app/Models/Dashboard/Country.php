@@ -23,7 +23,7 @@ class Country extends Model
         return $this->hasMany(User::class);
     }
 
-    public function status(){
+    public function status(): Attribute{
         return Attribute::make(
             get: fn ($value) => $value == 1 ? 'Active' : 'Inactive',
         );

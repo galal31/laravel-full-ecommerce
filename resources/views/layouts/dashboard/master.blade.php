@@ -40,6 +40,9 @@
             href="{{ asset('dashboard-assets/app-assets/css/pages/timeline.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('dashboard-assets/app-assets/css/style.css') }}">
     @endif
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.21/dist/sweetalert2.min.css"
+        integrity="sha256-VqBagSPahwzjkw8/E0KAY23AmFZuYBxX6f6uVDgY1rg=" crossorigin="anonymous">
+    @yield('css')
 </head>
 
 <body class="vertical-layout vertical-overlay-menu 2-columns menu-expanded fixed-navbar" data-open="click"
@@ -58,6 +61,73 @@
     <script src="{{ asset('dashboard-assets/app-assets/js/core/app-menu.js') }}" type="text/javascript"></script>
     <script src="{{ asset('dashboard-assets/app-assets/js/core/app.js') }}" type="text/javascript"></script>
     <script src="{{ asset('dashboard-assets/app-assets/js/scripts/customizer.js') }}" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.21/dist/sweetalert2.all.min.js"
+        integrity="sha256-DZ0W5YqW5Cigui/h8X//bdI8EShzkDIjIrgLKVOIHCs=" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            $(document).on('click', '.delete_confirm', function(e) {
+                e.preventDefault();
+
+                let url = $(this).data('url');
+                let title = $(this).data('title');
+                let text = $(this).data('text');
+                let confirmText = $(this).data('confirm');
+                let cancelText = $(this).data('cancel');
+
+                Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: confirmText,
+                    cancelButtonText: cancelText,
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let form = $('#delete-form-global');
+                        form.attr('action', url);
+                        form.submit();
+                    }
+                });
+            });
+
+            // toggle status
+            $(document).on('click', '.toggle-status-btn', function(e) {
+                e.preventDefault();
+
+                var url = $(this).data('url');
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}' // ضروري لتمرير حماية لارافيل
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // تحديث الجدول بدون إعادة تحميل الصفحة
+                            $('#YajraTable').DataTable().ajax.reload(null, false);
+
+                            // إظهار رسالة نجاح (اختياري: يمكنك استخدام Toastr أو SweetAlert)
+                            $('#ajax-alerts').html(`
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            ${response.message}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                        </div>
+                    `);
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('حدث خطأ أثناء تغيير الحالة.');
+                    }
+                });
+            });
+        })
+    </script>
     @yield('scripts')
 </body>
 

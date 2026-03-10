@@ -46,6 +46,14 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'brands' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/brands'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage/brands',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
 
         's3' => [
             'driver' => 's3',

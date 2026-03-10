@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'manage_brands'        => 'Manage Brands',
+    'brands_list'          => 'Brands List',
+    'add_new_brand'        => 'Add New Brand',
+    'edit_brand'           => 'Edit Brand',
+    'logo'                 => 'Logo',
+    'name'                 => 'Name',
+    'name_ar'              => 'Name (Arabic)',
+    'name_en'              => 'Name (English)',
+    'slug'                 => 'Slug',
+    'status'               => 'Status',
+    'actions'              => 'Actions',
+    'active'               => 'Active',
+    'inactive'             => 'Inactive',
+    'edit'                 => 'Edit',
+    'delete'               => 'Delete',
+    'toggle_status'        => 'Toggle Status',
+    'leave_blank_to_keep'  => 'Leave blank to keep current image',
+    'added_successfully'   => 'Brand added successfully',
+    'updated_successfully' => 'Brand updated successfully',
+    'deleted_successfully' => 'Brand deleted successfully',
+    'status_updated'       => 'Brand status updated successfully',
+];
