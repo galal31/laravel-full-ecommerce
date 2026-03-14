@@ -14,11 +14,11 @@ return new class extends Migration
     Schema::create('coupons', function (Blueprint $table) {
         $table->id();
         $table->string('code')->unique();
-        $table->decimal('discount', 10, 2)->nullable();
         $table->integer('discount_percentage')->nullable();
+        $table->date('start_date');
         $table->date('expire_date');
         $table->integer('limit')->nullable();
-        $table->integer('time_used')->default(0);
+        $table->integer('times_used')->default(0);
         $table->boolean('is_active')->default(true);
         $table->timestamps();
     });

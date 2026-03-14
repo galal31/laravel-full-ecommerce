@@ -25,7 +25,7 @@ class Country extends Model
 
     public function status(): Attribute{
         return Attribute::make(
-            get: fn ($value) => $value == 1 ? 'Active' : 'Inactive',
+            get: fn ($value) => $value == 1 ? __('messages.active') : __('messages.inactive'),
         );
     }
 }

@@ -12,4 +12,7 @@ return [
 'update'=>'Update',
 'active' => 'Active',
 'inactive' => 'Inactive',
+'edit' => 'Edit',
+'delete' => 'Delete',
+'toggle_status' => 'Toggle Status',
 ];

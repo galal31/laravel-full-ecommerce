@@ -11,5 +11,8 @@ return [
 'update'=>'تحديث',
 'active' => 'نشط',
 'inactive' => 'غير نشط',
+'edit' => 'تعديل',
+'delete' => 'حذف',
+'toggle_status' => 'تبديل الحالة',
 
 ];

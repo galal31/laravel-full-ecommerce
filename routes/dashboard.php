@@ -4,6 +4,7 @@ use App\Http\Controllers\dashboard\AdminsController;
 use App\Http\Controllers\dashboard\auth\AuthController;
 use App\Http\Controllers\Dashboard\BrandController;
 use App\Http\Controllers\dashboard\CategoriesController;
+use App\Http\Controllers\dashboard\CouponController;
 use App\Http\Controllers\dashboard\RolesController;
 use App\Http\Controllers\dashboard\WelcomeController;
 use App\Http\Controllers\dashboard\WorldController;
@@ -62,7 +63,7 @@ Route::group(
             #### categories routes ####
     
             Route::resource('categories', CategoriesController::class)->middleware('can:categories');
-            Route::post('/categories/{id}/toggleStatus', [CategoriesController::class, 'toggleStatus'])->name('categories.toggleStatus');
+            Route::post('/categories/{id}/toggleStatus', [CategoriesController::class, 'toggleStatus'])->name('categories.toggleStatus')->middleware('can:categories');
             #### end categories routes ####
     
 
@@ -73,6 +74,18 @@ Route::group(
             Route::resource('brands', BrandController::class)->except(['create', 'edit', 'show']);
             #### end brands routes ####
     
+
+            #### coupons routes ####
+            Route::group(['middleware' => ['can:coupons']], function () {
+                Route::get('coupons', [CouponController::class, 'index'])->name('coupons.index');
+                Route::post('coupons', [CouponController::class, 'store'])->name('coupons.store');
+                Route::put('coupons/{id}', [CouponController::class, 'update'])->name('coupons.update');
+                Route::delete('coupons/{id}', [CouponController::class, 'destroy'])->name('coupons.destroy');
+                Route::post('coupons/{id}/toggle-status', [CouponController::class, 'toggleStatus'])->name('coupons.toggleStatus');
+            });
+            #### end coupons routes ####
+    
+
 
         });
     }
