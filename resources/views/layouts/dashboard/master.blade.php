@@ -65,6 +65,7 @@
         integrity="sha256-DZ0W5YqW5Cigui/h8X//bdI8EShzkDIjIrgLKVOIHCs=" crossorigin="anonymous"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // دالة الحذف العامة باستخدام AJAX
             $(document).on('click', '.delete_confirm', function(e) {
                 e.preventDefault();
 
@@ -86,9 +87,48 @@
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        let form = $('#delete-form-global');
-                        form.attr('action', url);
-                        form.submit();
+                        // إرسال الطلب عبر AJAX بدل الفورم المخفية
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            data: {
+                                _method: 'DELETE', // تعريف لارافيل إن ده طلب حذف
+                                _token: '{{ csrf_token() }}' // تمرير التوكن للحماية
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    // عرض رسالة النجاح
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: response.message,
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    });
+                                    
+                                    // تحديث الـ DataTable لو موجود في الصفحة بدون ريفريش
+                                    if ($.fn.DataTable.isDataTable('#YajraTable')) {
+                                        $('#YajraTable').DataTable().ajax.reload(null, false);
+                                    } else {
+                                        // لو الصفحة مفيهاش DataTable، يعمل ريفريش عادي
+                                        setTimeout(() => {
+                                            location.reload();
+                                        }, 1500);
+                                    }
+                                } else {
+                                    // في حالة رجوع success: false من الكنترولر
+                                    Swal.fire('خطأ', response.message, 'error');
+                                }
+                            },
+                            error: function(xhr) {
+                                // في حالة حدوث خطأ في السيرفر (500)
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'خطأ',
+                                    text: 'حدث خطأ أثناء تنفيذ العملية.',
+                                    confirmButtonText: 'حسناً'
+                                });
+                            }
+                        });
                     }
                 });
             });

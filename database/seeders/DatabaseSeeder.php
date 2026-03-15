@@ -25,7 +25,8 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             WorldSeeder::class,
             CategorySeeder::class,
-            CouponSeeder::class
+            CouponSeeder::class,
+            FaqSeeder::class
         ]);
     }
 }

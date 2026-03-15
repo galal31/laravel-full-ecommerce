@@ -15,4 +15,6 @@ return [
 'edit' => 'Edit',
 'delete' => 'Delete',
 'toggle_status' => 'Toggle Status',
+'ok' => 'Ok',
+'cancel' => 'Cancel',
 ];

@@ -5,6 +5,7 @@ use App\Http\Controllers\dashboard\auth\AuthController;
 use App\Http\Controllers\Dashboard\BrandController;
 use App\Http\Controllers\dashboard\CategoriesController;
 use App\Http\Controllers\dashboard\CouponController;
+use App\Http\Controllers\dashboard\FaqController;
 use App\Http\Controllers\dashboard\RolesController;
 use App\Http\Controllers\dashboard\WelcomeController;
 use App\Http\Controllers\dashboard\WorldController;
@@ -83,6 +84,9 @@ Route::group(
                 Route::delete('coupons/{id}', [CouponController::class, 'destroy'])->name('coupons.destroy');
                 Route::post('coupons/{id}/toggle-status', [CouponController::class, 'toggleStatus'])->name('coupons.toggleStatus');
             });
+            #### end coupons routes ####
+            #### coupons routes ####
+            Route::resource('faqs', FaqController::class)->except(['create', 'edit', 'show'])->middleware('can:faqs');
             #### end coupons routes ####
     
 
