@@ -7,6 +7,7 @@ use App\Http\Controllers\dashboard\CategoriesController;
 use App\Http\Controllers\dashboard\CouponController;
 use App\Http\Controllers\dashboard\FaqController;
 use App\Http\Controllers\dashboard\RolesController;
+use App\Http\Controllers\dashboard\SettingsController;
 use App\Http\Controllers\dashboard\WelcomeController;
 use App\Http\Controllers\dashboard\WorldController;
 use Illuminate\Support\Facades\Route;
@@ -87,6 +88,10 @@ Route::group(
             #### end coupons routes ####
             #### coupons routes ####
             Route::resource('faqs', FaqController::class)->except(['create', 'edit', 'show'])->middleware('can:faqs');
+            #### end coupons routes ####
+            #### coupons routes ####
+            Route::get('/settings',[SettingsController::class,'index'])->name('settings.index');
+            Route::put('/settings',[SettingsController::class,'update'])->name('settings.update');
             #### end coupons routes ####
     
 

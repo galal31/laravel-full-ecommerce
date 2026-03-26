@@ -54,6 +54,14 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'settings' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/settings'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage/settings',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
 
         's3' => [
             'driver' => 's3',

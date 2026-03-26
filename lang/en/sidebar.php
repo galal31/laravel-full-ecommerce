@@ -1,0 +1,22 @@
+<?php
+
+return [
+    'roles'               => 'Roles',
+    'manage_roles'        => 'Manage Roles',
+    'admins'              => 'Admins',
+    'manage_admins'       => 'Manage Admins',
+    'geography'           => 'Geography',
+    'manage_countries'    => 'Manage Countries',
+    'manage_governorates' => 'Manage Governorates',
+    'manage_cities'       => 'Manage Cities',
+    'categories'          => 'Categories',
+    'manage_categories'   => 'Manage Categories',
+    'brands'              => 'Brands',
+    'manage_brands'       => 'Manage Brands',
+    'coupons'             => 'Coupons',
+    'manage_coupons'      => 'Manage Coupons',
+    'faqs'                => 'FAQs',
+    'manage_faqs'         => 'Manage FAQs',
+    'settings'            => 'Settings',
+    'manage_settings'     => 'Manage Settings',
+];

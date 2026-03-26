@@ -1,0 +1,22 @@
+<?php
+
+return [
+    'roles'               => 'الأدوار والصلاحيات',
+    'manage_roles'        => 'إدارة الأدوار',
+    'admins'              => 'المشرفين',
+    'manage_admins'       => 'إدارة المشرفين',
+    'geography'           => 'الجغرافيا',
+    'manage_countries'    => 'إدارة الدول',
+    'manage_governorates' => 'إدارة المحافظات',
+    'manage_cities'       => 'إدارة المدن',
+    'categories'          => 'الأقسام',
+    'manage_categories'   => 'إدارة الأقسام',
+    'brands'              => 'الماركات',
+    'manage_brands'       => 'إدارة الماركات',
+    'coupons'             => 'الكوبونات',
+    'manage_coupons'      => 'إدارة الكوبونات',
+    'faqs'                => 'الأسئلة الشائعة',
+    'manage_faqs'         => 'إدارة الأسئلة الشائعة',
+    'settings'            => 'الإعدادات',
+    'manage_settings'     => 'تعديل الإعدادات',
+];
