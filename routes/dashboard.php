@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\dashboard\AdminsController;
+use App\Http\Controllers\Dashboard\AttributeController;
 use App\Http\Controllers\dashboard\auth\AuthController;
 use App\Http\Controllers\Dashboard\BrandController;
 use App\Http\Controllers\dashboard\CategoriesController;
 use App\Http\Controllers\dashboard\CouponController;
 use App\Http\Controllers\dashboard\FaqController;
+use App\Http\Controllers\dashboard\ProductsController;
 use App\Http\Controllers\dashboard\RolesController;
 use App\Http\Controllers\dashboard\SettingsController;
 use App\Http\Controllers\dashboard\WelcomeController;
@@ -93,6 +95,15 @@ Route::group(
             Route::get('/settings',[SettingsController::class,'index'])->name('settings.index');
             Route::put('/settings',[SettingsController::class,'update'])->name('settings.update');
             #### end coupons routes ####
+
+            ### start attibutes routes ###
+            Route::resource('attributes', AttributeController::class)->except(['create', 'show', 'edit']);
+            ### end attibutes routes ###
+
+            ### start products routes ###
+            Route::post('products/{id}/toggle-status', [ProductsController::class, 'toggleStatus'])->name('products.toggleStatus');
+            Route::resource('products',ProductsController::class);
+            
     
 
 

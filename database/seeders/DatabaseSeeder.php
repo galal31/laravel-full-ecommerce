@@ -26,7 +26,10 @@ class DatabaseSeeder extends Seeder
             WorldSeeder::class,
             CategorySeeder::class,
             CouponSeeder::class,
-            FaqSeeder::class
+            FaqSeeder::class,
+            BrandSeeder::class,
+            AttributeSeeder::class,
+            
         ]);
     }
 }

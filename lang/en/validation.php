@@ -196,10 +196,48 @@ return [
     */
 
     'attributes' => [
-        'email' => 'Email Address',
-        'password' => 'Password',
-        'name' => 'Name',
-        'token' => 'Token',
-    ],
+
+    // General
+    'name' => 'Name',
+    'email' => 'Email Address',
+    'password' => 'Password',
+    'token' => 'Token',
+
+    // Name
+    'name.ar' => 'Name (Arabic)',
+    'name.en' => 'Name (English)',
+
+    // Relations
+    'category_id' => 'Category',
+    'brand_id' => 'Brand',
+
+    // Descriptions
+    'small_desc.ar' => 'Short Description (Arabic)',
+    'small_desc.en' => 'Short Description (English)',
+    'desc.ar' => 'Description (Arabic)',
+    'desc.en' => 'Description (English)',
+
+    // Extra
+    'tags' => 'Tags',
+    'available_for' => 'Available Until',
+
+    // Pricing & Stock
+    'sku' => 'SKU',
+    'price' => 'Price',
+    'quantity' => 'Quantity',
+
+    // Toggles
+    'has_variants' => 'Has Variants',
+    'manage_stock' => 'Manage Stock',
+    'has_discount' => 'Has Discount',
+
+    // Discount
+    'discount' => 'Discount Percentage',
+    'start_discount' => 'Discount Start Date',
+    'end_discount' => 'Discount End Date',
+
+    // Images
+    'images' => 'Product Images',
+],
 
 ];

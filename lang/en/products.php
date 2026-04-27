@@ -1,0 +1,78 @@
+<?php
+
+return [
+    'add_new_product' => 'Add New Product',
+    'step_1' => 'Basic Info',
+    'step_2' => 'Price & Stock',
+    'step_3' => 'Media & Review',
+
+    'basic_info' => 'Product Basic Information',
+    'name_ar' => 'Product Name (AR)',
+    'name_en' => 'Product Name (EN)',
+    'small_desc_ar' => 'Short Description (AR)',
+    'small_desc_en' => 'Short Description (EN)',
+    'desc_ar' => 'Full Description (AR)',
+    'desc_en' => 'Full Description (EN)',
+    'category' => 'Category',
+    'select_category' => 'Select Category...',
+    'brand' => 'Brand',
+    'select_brand' => 'Select Brand...',
+    'tags' => 'Tags',
+    'available_for' => 'Available Until',
+
+    'pricing_inventory' => 'Pricing & Inventory Data',
+    'sku' => 'SKU',
+    'has_variants' => 'Has Variants? (Colors/Sizes)',
+    'manage_stock' => 'Manage Stock?',
+    'has_discount' => 'Has Discount?',
+    'yes' => 'Yes',
+    'no' => 'No',
+    'price' => 'Base Price',
+    'quantity' => 'Available Quantity',
+    'discount_percentage' => 'Discount (%)',
+    'start_discount' => 'Discount Start Date',
+    'end_discount' => 'Discount End Date',
+
+    'media_review' => 'Product Images & Final Review',
+    'product_images' => 'Product Images',
+    'review_data' => 'Review Data',
+
+    'next' => 'Next',
+    'previous' => 'Previous',
+    'save_product' => 'Save Product',
+    'tags_placeholder' => 'e.g: mobile, electronics, samsung',
+
+    'manage_variants' => 'Manage Variants',
+    'select' => 'Select',
+    'add_new_variant' => 'Add New Variant',
+    'remove_last_variant' => 'Remove Last Variant',
+
+    'uploading_images' => 'Uploading images...',
+
+    'variants_count' => 'Variants Count',
+
+    'product_created_successfully' => 'Product created successfully',
+    'error_occurred' => 'An error occurred',
+    'manage_products'  => 'Manage Products',
+    'products_list'    => 'Products List',
+    'edit_product'     => 'Edit Product',
+    'name'             => 'Product Name',
+    'status'           => 'Status',
+    'actions'          => 'Actions',
+    'active'           => 'Active',
+    'inactive'         => 'Inactive',
+    'product_details'  => 'Product Details',
+
+    // New keys for the Show Product page
+    'views'            => 'Views',
+    'product_variants' => 'Product Variants',
+    'attributes'       => 'Attributes',
+    'stock'            => 'Stock',
+    'unlimited'        => 'Unlimited',
+    'description'      => 'Description',
+    'back'             => 'Back',
+    'edit'             => 'Edit',
+    'no_images'        => 'No images for this product',
+    'variant_images' => 'Variant Images',
+    'upload_new_image' => 'Upload New Image',
+];

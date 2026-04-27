@@ -62,6 +62,22 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'products' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/products'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage/products',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+        'variants' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/variants'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage/variants',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
 
         's3' => [
             'driver' => 's3',

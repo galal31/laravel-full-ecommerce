@@ -1,0 +1,78 @@
+<?php
+
+return [
+    'add_new_product' => 'إضافة منتج جديد',
+    'step_1' => 'البيانات الأساسية',
+    'step_2' => 'السعر والمخزون',
+    'step_3' => 'الصور والمراجعة',
+
+    'basic_info' => 'المعلومات الأساسية للمنتج',
+    'name_ar' => 'اسم المنتج (عربي)',
+    'name_en' => 'اسم المنتج (إنجليزي)',
+    'small_desc_ar' => 'وصف قصير (عربي)',
+    'small_desc_en' => 'وصف قصير (إنجليزي)',
+    'desc_ar' => 'وصف تفصيلي (عربي)',
+    'desc_en' => 'وصف تفصيلي (إنجليزي)',
+    'category' => 'القسم',
+    'select_category' => 'اختر القسم...',
+    'brand' => 'الماركة',
+    'select_brand' => 'اختر الماركة...',
+    'tags' => 'الكلمات الدلالية (Tags)',
+    'available_for' => 'متاح حتى تاريخ',
+
+    'pricing_inventory' => 'بيانات السعر والمخزون',
+    'sku' => 'كود المنتج (SKU)',
+    'has_variants' => 'هل المنتج متعدد السمات؟ (ألوان/مقاسات)',
+    'manage_stock' => 'تتبع المخزون؟',
+    'has_discount' => 'هل يوجد خصم؟',
+    'yes' => 'نعم',
+    'no' => 'لا',
+    'price' => 'السعر الأساسي',
+    'quantity' => 'الكمية المتاحة',
+    'discount_percentage' => 'نسبة الخصم (%)',
+    'start_discount' => 'تاريخ بدء الخصم',
+    'end_discount' => 'تاريخ انتهاء الخصم',
+
+    'media_review' => 'صور المنتج والمراجعة النهائية',
+    'product_images' => 'صور المنتج',
+    'review_data' => 'مراجعة البيانات',
+
+    'next' => 'التالي',
+    'previous' => 'السابق',
+    'save_product' => 'حفظ المنتج',
+    'tags_placeholder' => 'مثال: موبايل, إلكترونيات, سامسونج',
+
+    'manage_variants' => 'إدارة السمات',
+    'select' => 'اختر',
+    'add_new_variant' => 'إضافة سمة جديدة',
+    'remove_last_variant' => 'حذف آخر سمة',
+
+    'uploading_images' => 'جاري رفع الصور...',
+
+    'variants_count' => 'عدد السمات',
+
+    'product_created_successfully' => 'تم إنشاء المنتج بنجاح',
+    'error_occurred' => 'حدث خطأ',
+    'manage_products'  => 'إدارة المنتجات',
+    'products_list'    => 'قائمة المنتجات',
+    'edit_product'     => 'تعديل المنتج',
+    'name'             => 'اسم المنتج',
+    'status'           => 'الحالة',
+    'actions'          => 'العمليات',
+    'active'           => 'مفعل',
+    'inactive'         => 'غير مفعل',
+    'product_details'  => 'تفاصيل المنتج',
+
+    // المفاتيح الجديدة الخاصة بصفحة عرض المنتج (Show)
+    'views'            => 'المشاهدات',
+    'product_variants' => 'متغيرات المنتج',
+    'attributes'       => 'الخصائص',
+    'stock'            => 'المخزون',
+    'unlimited'        => 'غير محدود',
+    'description'      => 'الوصف',
+    'back'             => 'رجوع',
+    'edit'             => 'تعديل',
+    'no_images'        => 'لا توجد صور لهذا المنتج',
+    'variant_images' => 'صور المتغيرات',
+    'upload_new_image' => 'رفع صورة جديدة',
+];

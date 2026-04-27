@@ -24,6 +24,14 @@ trait UploadFileTrait
         return $file->store('/', $disk);
     }
 
+    public function uploadFiles($files,$disk, $model){
+
+        foreach($files as $file){
+            $file_name = $this->uploadFile($file, $disk);
+            $model->images()->create(['file_name' => $file_name]);
+        }
+    }
+
     public function deleteFile($fileName, $disk)
     {
         // ليه بنشيك إن الملف موجود الأول (exists)؟
