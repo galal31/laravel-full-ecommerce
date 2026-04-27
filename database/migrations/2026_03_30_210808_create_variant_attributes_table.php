@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tags', function (Blueprint $table) {
+        Schema::create('variant_attributes', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->foreignId('product_variant_id')->references('id')->on('product_variants')->onDelete('cascade');
+            $table->foreignId('attribute_value_id')->references('id')->on('attribute_values')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tags');
+        Schema::dropIfExists('variant_attributes');
     }
 };

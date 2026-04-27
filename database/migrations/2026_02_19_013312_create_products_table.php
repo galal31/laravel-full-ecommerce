@@ -20,6 +20,7 @@ return new class extends Migration {
                 ->cascadeOnDelete();
 
             $table->foreignId('brand_id')
+                ->nullable()
                 ->constrained('brands')
                 ->cascadeOnDelete();
 

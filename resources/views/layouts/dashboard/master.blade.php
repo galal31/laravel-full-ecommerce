@@ -66,72 +66,74 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // دالة الحذف العامة باستخدام AJAX
-            $(document).on('click', '.delete_confirm', function(e) {
-                e.preventDefault();
+        // دالة الحذف العامة باستخدام AJAX
+        $(document).on('click', '.delete_confirm', function(e) {
+            e.preventDefault();
 
-                let url = $(this).data('url');
-                let title = $(this).data('title');
-                let text = $(this).data('text');
-                let confirmText = $(this).data('confirm');
-                let cancelText = $(this).data('cancel');
+            let url = $(this).data('url');
+            let title = $(this).data('title');
+            // التعديل هنا: وضعنا علامات تنصيص
+            let text = "{{ __('messages.delete_text') }}" ; 
+            let confirmText = "{{ __('messages.confirm_delete') }}" ;
+            let cancelText = "{{ __('messages.cancel') }}" ;
 
-                Swal.fire({
-                    title: title,
-                    text: text,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: confirmText,
-                    cancelButtonText: cancelText,
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // إرسال الطلب عبر AJAX بدل الفورم المخفية
-                        $.ajax({
-                            url: url,
-                            type: 'POST',
-                            data: {
-                                _method: 'DELETE', // تعريف لارافيل إن ده طلب حذف
-                                _token: '{{ csrf_token() }}' // تمرير التوكن للحماية
-                            },
-                            success: function(response) {
-                                if (response.success) {
-                                    // عرض رسالة النجاح
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: response.message,
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    });
-                                    
-                                    // تحديث الـ DataTable لو موجود في الصفحة بدون ريفريش
-                                    if ($.fn.DataTable.isDataTable('#YajraTable')) {
-                                        $('#YajraTable').DataTable().ajax.reload(null, false);
-                                    } else {
-                                        // لو الصفحة مفيهاش DataTable، يعمل ريفريش عادي
-                                        setTimeout(() => {
-                                            location.reload();
-                                        }, 1500);
-                                    }
-                                } else {
-                                    // في حالة رجوع success: false من الكنترولر
-                                    Swal.fire('خطأ', response.message, 'error');
-                                }
-                            },
-                            error: function(xhr) {
-                                // في حالة حدوث خطأ في السيرفر (500)
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: confirmText,
+                cancelButtonText: cancelText,
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // إرسال الطلب عبر AJAX
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {
+                            _method: 'DELETE', // تعريف لارافيل إن ده طلب حذف
+                            _token: '{{ csrf_token() }}' // تمرير التوكن للحماية
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                // عرض رسالة النجاح
                                 Swal.fire({
-                                    icon: 'error',
-                                    title: 'خطأ',
-                                    text: 'حدث خطأ أثناء تنفيذ العملية.',
-                                    confirmButtonText: 'حسناً'
+                                    icon: 'success',
+                                    title: response.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
                                 });
+                                
+                                // تحديث الـ DataTable لو موجود في الصفحة بدون ريفريش
+                                if ($.fn.DataTable.isDataTable('#YajraTable')) {
+                                    $('#YajraTable').DataTable().ajax.reload(null, false);
+                                } else {
+                                    // لو الصفحة مفيهاش DataTable، يعمل ريفريش عادي
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 1500);
+                                }
+                            } else {
+                                // في حالة رجوع success: false من الكنترولر
+                                Swal.fire('خطأ', response.message, 'error');
                             }
-                        });
-                    }
-                });
+                        },
+                        error: function(xhr) {
+                            // في حالة حدوث خطأ في السيرفر (500)
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'خطأ',
+                                text: 'حدث خطأ أثناء تنفيذ العملية.',
+                                confirmButtonText: 'حسناً'
+                            });
+                        }
+                    });
+                }
             });
+        });
 
             // toggle status
             $(document).on('click', '.toggle-status-btn', function(e) {

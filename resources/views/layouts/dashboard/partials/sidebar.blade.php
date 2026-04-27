@@ -53,11 +53,31 @@
             @endcan
 
             {{-- الماركات التجارية (Brands) --}}
-            @can('brands') {{-- تأكد من إضافة هذه الصلاحية في قاعدة البيانات إذا كنت تستخدمها --}}
+            @can('brands')
             <li class="nav-item">
                 <a href="#"><i class="la la-copyright"></i><span class="menu-title">{{ __('sidebar.brands') }}</span></a>
                 <ul class="menu-content">
                     <li><a class="menu-item" href="{{ route('dashboard.brands.index') }}">{{ __('sidebar.manage_brands') }}</a></li>
+                </ul>
+            </li>
+            @endcan
+
+            {{-- الخصائص (Attributes) --}}
+            @can('attributes')
+            <li class="nav-item">
+                <a href="#"><i class="la la-list"></i><span class="menu-title">{{ __('sidebar.attributes') }}</span></a>
+                <ul class="menu-content">
+                    <li><a class="menu-item" href="{{ route('dashboard.attributes.index') }}">{{ __('sidebar.manage_attributes') }}</a></li>
+                </ul>
+            </li>
+            @endcan
+
+            {{-- المنتجات (Products) --}}
+            @can('products')
+            <li class="nav-item">
+                <a href="#"><i class="la la-shopping-cart"></i><span class="menu-title">{{ __('sidebar.products') }}</span></a>
+                <ul class="menu-content">
+                    <li><a class="menu-item" href="{{ route('dashboard.products.index') }}">{{ __('sidebar.manage_products') }}</a></li>
                 </ul>
             </li>
             @endcan
@@ -83,7 +103,7 @@
             @endcan
 
             {{-- الإعدادات (Settings) --}}
-            @can('settings') {{-- تأكد من إضافة هذه الصلاحية --}}
+            @can('settings')
             <li class="nav-item">
                 <a href="#"><i class="la la-cog"></i><span class="menu-title">{{ __('sidebar.settings') }}</span></a>
                 <ul class="menu-content">

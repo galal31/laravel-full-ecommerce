@@ -19,4 +19,8 @@ return [
     'manage_faqs'         => 'Manage FAQs',
     'settings'            => 'Settings',
     'manage_settings'     => 'Manage Settings',
+    'products'            => 'Products',
+    'manage_products'     => 'Manage Products',
+    'attributes'        => 'Attributes',
+    'manage_attributes' => 'Manage Attributes',
 ];

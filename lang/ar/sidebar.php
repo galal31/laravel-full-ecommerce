@@ -19,4 +19,8 @@ return [
     'manage_faqs'         => 'إدارة الأسئلة الشائعة',
     'settings'            => 'الإعدادات',
     'manage_settings'     => 'تعديل الإعدادات',
+    'products'            => 'المنتجات',
+    'manage_products'     => 'إدارة المنتجات',
+    'attributes'        => 'الخصائص',
+    'manage_attributes' => 'إدارة الخصائص',
 ];
