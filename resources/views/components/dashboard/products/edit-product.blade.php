@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 new class extends Component {
     use WithFileUploads;
 
-    public int $productId;
+    public int $productId; 
     public int $currentStep = 1;
 
     // الأساسيات

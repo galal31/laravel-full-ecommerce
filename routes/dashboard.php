@@ -10,6 +10,7 @@ use App\Http\Controllers\dashboard\FaqController;
 use App\Http\Controllers\dashboard\ProductsController;
 use App\Http\Controllers\dashboard\RolesController;
 use App\Http\Controllers\dashboard\SettingsController;
+use App\Http\Controllers\dashboard\UsersController;
 use App\Http\Controllers\dashboard\WelcomeController;
 use App\Http\Controllers\dashboard\WorldController;
 use Illuminate\Support\Facades\Route;
@@ -103,6 +104,12 @@ Route::group(
             ### start products routes ###
             Route::post('products/{id}/toggle-status', [ProductsController::class, 'toggleStatus'])->name('products.toggleStatus');
             Route::resource('products',ProductsController::class);
+                ### end products routes ###
+
+            ### start users routes ###
+            Route::post('users/{id}/toggle-status', [UsersController::class, 'toggleStatus'])->name('users.toggleStatus');
+            Route::resource('users', UsersController::class)->middleware('can:users');
+             ### end users routes ###
             
     
 
