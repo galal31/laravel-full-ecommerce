@@ -5,6 +5,7 @@ use App\Http\Controllers\Dashboard\AttributeController;
 use App\Http\Controllers\dashboard\auth\AuthController;
 use App\Http\Controllers\Dashboard\BrandController;
 use App\Http\Controllers\dashboard\CategoriesController;
+use App\Http\Controllers\dashboard\ContactsController;
 use App\Http\Controllers\dashboard\CouponController;
 use App\Http\Controllers\dashboard\FaqController;
 use App\Http\Controllers\dashboard\ProductsController;
@@ -110,7 +111,10 @@ Route::group(
             Route::post('users/{id}/toggle-status', [UsersController::class, 'toggleStatus'])->name('users.toggleStatus');
             Route::resource('users', UsersController::class)->middleware('can:users');
              ### end users routes ###
-            
+             
+             ### start contacts routes ###
+                Route::get('/contacts', [ContactsController::class, 'index'])->name('contacts.index');
+             ### end contacts routes ###
     
 
 

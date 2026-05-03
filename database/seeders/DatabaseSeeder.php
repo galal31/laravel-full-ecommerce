@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             FaqSeeder::class,
             BrandSeeder::class,
             AttributeSeeder::class,
+            ContactSeeder::class,
             
         ]);
         User::factory(5)->create();
