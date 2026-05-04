@@ -24,6 +24,23 @@ return [
         'new_to_modern' => 'جديد على النظام؟',
         'register_button' => 'إنشاء حساب',
     ],
+    'register' => [
+        'title' => 'إنشاء حساب جديد',
+        'name_label' => 'الاسم*',
+        'name_placeholder' => 'الاسم الأول',
+        'email_label' => 'البريد الإلكتروني*',
+        'email_placeholder' => 'user@example.com',
+        'phone_label' => 'رقم الهاتف*',
+        'phone_placeholder' => '01xxxxxxxxx',
+        'password_label' => 'كلمة المرور*',
+        'password_placeholder' => '********',
+        'password_confirm_label' => 'تأكيد كلمة المرور*',
+        'agree_terms' => 'أوافق على جميع الشروط والأحكام الخاصة بـ',
+        'shop_name' => 'متجرنا.',
+        'button' => 'إنشاء الحساب',
+        'already_have_account' => 'لديك حساب بالفعل؟',
+        'login_link' => 'تسجيل الدخول',
+    ],
 
     'validation' => [
         'email_required' => 'من فضلك أدخل البريد الإلكتروني.',

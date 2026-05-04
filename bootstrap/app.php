@@ -26,11 +26,13 @@ return Application::configure(basePath: dirname(__DIR__))
             if($request->is('*/dashboard/*')) {
                 return route('dashboard.login');
             }else{
-                return 1;
+                return route('website.login');
             }
         })->redirectUsersTo(function(Request $request) {
             if($request->is('*/dashboard/*')) {
                 return route('dashboard.welcome');
+            }else{
+                return route('website.home');
             }
         });
     })

@@ -27,6 +27,23 @@ return [
         'new_to_modern' => 'New to Modern?',
         'register_button' => 'Register',
     ],
+    'register' => [
+        'title' => 'Create Account',
+        'name_label' => 'Name*',
+        'name_placeholder' => 'First Name',
+        'email_label' => 'Email*',
+        'email_placeholder' => 'user@example.com',
+        'phone_label' => 'Phone*',
+        'phone_placeholder' => '+1xxxxxxxxx',
+        'password_label' => 'Password*',
+        'password_placeholder' => '********',
+        'password_confirm_label' => 'Confirm Password*',
+        'agree_terms' => 'I agree to all terms and conditions in',
+        'shop_name' => 'ShopUs.',
+        'button' => 'Create an Account',
+        'already_have_account' => 'Already have an account?',
+        'login_link' => 'Log In',
+    ],
 
     'validation' => [
         'email_required' => 'Please enter your email address.',
