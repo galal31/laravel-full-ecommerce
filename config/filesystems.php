@@ -78,6 +78,14 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'sliders' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/sliders'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage/sliders',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
 
         's3' => [
             'driver' => 's3',

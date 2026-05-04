@@ -11,6 +11,7 @@ use App\Http\Controllers\dashboard\FaqController;
 use App\Http\Controllers\dashboard\ProductsController;
 use App\Http\Controllers\dashboard\RolesController;
 use App\Http\Controllers\dashboard\SettingsController;
+use App\Http\Controllers\dashboard\SliderController;
 use App\Http\Controllers\dashboard\UsersController;
 use App\Http\Controllers\dashboard\WelcomeController;
 use App\Http\Controllers\dashboard\WorldController;
@@ -94,27 +95,39 @@ Route::group(
             Route::resource('faqs', FaqController::class)->except(['create', 'edit', 'show'])->middleware('can:faqs');
             #### end coupons routes ####
             #### coupons routes ####
-            Route::get('/settings',[SettingsController::class,'index'])->name('settings.index');
-            Route::put('/settings',[SettingsController::class,'update'])->name('settings.update');
+            Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+            Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
             #### end coupons routes ####
-
+    
             ### start attibutes routes ###
             Route::resource('attributes', AttributeController::class)->except(['create', 'show', 'edit']);
             ### end attibutes routes ###
-
+    
             ### start products routes ###
             Route::post('products/{id}/toggle-status', [ProductsController::class, 'toggleStatus'])->name('products.toggleStatus');
-            Route::resource('products',ProductsController::class);
-                ### end products routes ###
-
+            Route::resource('products', ProductsController::class);
+            ### end products routes ###
+    
             ### start users routes ###
             Route::post('users/{id}/toggle-status', [UsersController::class, 'toggleStatus'])->name('users.toggleStatus');
             Route::resource('users', UsersController::class)->middleware('can:users');
-             ### end users routes ###
-             
-             ### start contacts routes ###
-                Route::get('/contacts', [ContactsController::class, 'index'])->name('contacts.index');
-             ### end contacts routes ###
+            ### end users routes ###
+    
+            ### start contacts routes ###
+            Route::get('/contacts', [ContactsController::class, 'index'])->name('contacts.index');
+            ### end contacts routes ###
+            ### start slider management routes ###
+    
+
+            Route::prefix('sliders')
+                ->name('sliders.')
+                ->controller(SliderController::class)
+                ->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::post('/', 'store')->name('store');
+                    Route::delete('/{id}', 'destroy')->name('destroy');
+                });
+            ### end slider management routes ###
     
 
 

@@ -16,4 +16,6 @@ return [
     'delete' => 'Delete',
     'toggle_status' => 'Toggle Status',
     'ok' => 'Ok',
+'yes_delete' => 'Yes, delete',
+'close' => 'Close',
 ];

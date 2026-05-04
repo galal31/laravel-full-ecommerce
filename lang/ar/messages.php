@@ -15,6 +15,6 @@ return [
 'delete' => 'حذف',
 'toggle_status' => 'تبديل الحالة',
 'ok' => 'موافق',
-'cancel' => 'اغلاق',
-
+'yes_delete' => 'نعم، احذف',
+'close' => 'إغلاق',
 ];
