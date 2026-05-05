@@ -34,7 +34,6 @@ class AppServiceProvider extends ServiceProvider
                 return Admin::count();
             });
             $view->with(['dashboard_roles_count' => $roles_count, 'dashboard_admins_count' => $admins_count]);
-            Cache::forget('site_settings');
             $settings = Cache::rememberForever('site_settings', function () {
                 $settings = Setting::firstOrCreate(
                     ['id' => 1], // شرط البحث

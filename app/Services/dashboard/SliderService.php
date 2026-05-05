@@ -4,6 +4,7 @@ namespace App\Services\dashboard;
 
 use App\Reposetories\dashboard\SliderRepo;
 use App\Traits\UploadFileTrait;
+use Illuminate\Support\Facades\Cache;
 use Yajra\DataTables\Facades\DataTables;
 
 class SliderService
@@ -58,6 +59,7 @@ class SliderService
             $fileName = $this->uploadFile($image, 'sliders');
             $data['file_name'] = $fileName;
         }
+        Cache::forget('sliders');
 
         return $this->sliderRepository->createSlider($data);
     }
@@ -77,6 +79,7 @@ class SliderService
                 unlink($path);
             }
         }
+        Cache::forget('sliders');
 
         return $this->sliderRepository->deleteSlider($slider);
     }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\website\HomeController;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -16,10 +17,9 @@ Route::group(
         ]
     ],
     function () {
-        Route::get('/', function () {
-                return view('website.home');
-            })->name('home');
-
+        Route::controller(HomeController::class)->group(function () {
+            Route::get('/', 'index')->name('home');
+        });
         /*
         |--------------------------------------------------------------------------
         | Guest Routes
