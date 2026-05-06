@@ -4,12 +4,17 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Dashboard\Category;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class CategorySeeder extends Seeder
 {
     public function run(): void
     {
+        // Clear existing categories
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Category::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         $categories = [
             [
                 'name' => ['en' => 'Electronics', 'ar' => 'إلكترونيات'],
@@ -73,21 +78,23 @@ class CategorySeeder extends Seeder
         ];
 
         foreach ($categories as $categoryData) {
-            // إنشاء القسم الرئيسي
+
             $parent = Category::create([
-                'name'      => $categoryData['name'], // بيمرر مصفوفة لارافيل هيحولها JSON
-                'slug'      => Str::slug($categoryData['name']['en']),
-                'status'    => 1,
+                'name' => $categoryData['name'],
+                'slug' => Str::slug($categoryData['name']['en']),
+                'status' => 1,
                 'parent_id' => null,
+                'icon' => 'default.png',
             ]);
 
-            // إنشاء الأقسام الفرعية
+
             foreach ($categoryData['sub'] as $subItem) {
                 Category::create([
-                    'name'      => $subItem,
-                    'slug'      => Str::slug($subItem['en']),
-                    'status'    => 1,
+                    'name' => $subItem,
+                    'slug' => Str::slug($subItem['en']),
+                    'status' => 1,
                     'parent_id' => $parent->id,
+                    'icon' => 'default.png',
                 ]);
             }
         }

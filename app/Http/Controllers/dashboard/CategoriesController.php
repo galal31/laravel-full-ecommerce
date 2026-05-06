@@ -15,6 +15,7 @@ class CategoriesController extends Controller
      * Display a listing of the resource.
      */
     protected $categoriesService;
+
     public function __construct(CategoryService $categoriesService)
     {
         $this->categoriesService = $categoriesService;
@@ -22,6 +23,7 @@ class CategoriesController extends Controller
     public function index()
     {
         if (request()->ajax()) {
+            
             return $this->categoriesService->index();
         }
         $parents = $this->categoriesService->getParentCategories();

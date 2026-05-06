@@ -21,6 +21,7 @@ class CategoryService
 
     public function index()
     {
+        
         $categories = $this->categoryRepo->index();
         return DataTables::of($categories)
             ->addColumn('name', function ($category) {
@@ -29,6 +30,9 @@ class CategoryService
             ->editColumn('status', function ($category) {
                 return $category->status == 1 ? __('categories.active') : __('categories.inactive');
             })
+            ->editColumn('icon', function ($category) {
+                return '<img src="' . $category->icon . '" alt="' . $category->getTranslation('name', app()->getLocale()) . '" width="50" height="50">';
+            })
             ->addIndexColumn()
             ->addColumn('actions', function ($category) {
                 return view('dashboard.categories._actions', compact('category'));
@@ -36,6 +40,7 @@ class CategoryService
             ->addColumn('parent', function ($category) {
                 return $category->parent ? $category->parent->getTranslation('name', app()->getLocale()) : __('categories.no_parent');
             })
+            ->rawColumns(['actions', 'icon'])
             ->make(true);
     }
 
@@ -63,14 +68,13 @@ class CategoryService
 
     public function store($data)
     {
-        $cat = Category::create($data);
+        $cat = $this->categoryRepo->store($data);
         return $cat;
     }
 
     public function update($id, $data)
     {
-        $cat = $this->getCategory($id);
-        $cat->update($data);
+        $cat = $this->categoryRepo->update($id, $data);
         return $cat;
     }
 

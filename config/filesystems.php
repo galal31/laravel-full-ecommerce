@@ -70,6 +70,14 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'categories' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/categories'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage/categories',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
         'variants' => [
             'driver' => 'local',
             'root' => storage_path('app/public/variants'),

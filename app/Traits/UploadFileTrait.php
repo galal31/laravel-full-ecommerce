@@ -11,9 +11,8 @@ trait UploadFileTrait
      * لأن رفع الصور عملية هتتكرر في (المنتجات، الأقسام، المستخدمين). 
      * كتابة الكود في كل Service هيعمل تكرار (Don't Repeat Yourself - DRY).
      */
-    public function uploadFile($file, $disk=null, $oldFile = null)
+    public function uploadFile($file, $disk, $oldFile = null)
     {
-        
         // ليه بنشيك على الملف القديم هنا؟ 
         // عشان نوفر خطوة في الـ Service ونتأكد إن السيرفر مش هيتملي بصور ملهاش لازمة عند التحديث.
         if ($oldFile) {
@@ -25,9 +24,10 @@ trait UploadFileTrait
         return $file->store('/', $disk);
     }
 
-    public function uploadFiles($files,$disk, $model){
+    public function uploadFiles($files, $disk, $model)
+    {
 
-        foreach($files as $file){
+        foreach ($files as $file) {
             $file_name = $this->uploadFile($file, $disk);
             $model->images()->create(['file_name' => $file_name]);
         }

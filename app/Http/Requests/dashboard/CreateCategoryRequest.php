@@ -39,6 +39,7 @@ class CreateCategoryRequest extends FormRequest
                     $query->where('id', '!=', $cat_id);
                 }
             })],
+            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
 
         // if($cat_id) {

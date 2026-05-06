@@ -21,5 +21,7 @@ return [
     'updated_successfully' => 'تم التحديث بنجاح',
     'error_occurred'       => 'حدث خطأ، تأكد من البيانات',
     'no_parent'            => 'لا يوجد قسم رئيسي',
+    'icon' => 'الأيقونة',
+'current_icon' => 'الأيقونة الحالية',
     
 ];

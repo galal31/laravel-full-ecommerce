@@ -4,10 +4,13 @@ namespace App\Models\Dashboard;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Product extends Model
 {
     use HasTranslations;
+    use HasSlug;
     protected $fillable = [
         'category_id',
         'brand_id',
@@ -25,12 +28,21 @@ class Product extends Model
         'manage_stock',
         'quantity',
         'available_in_stock',
-    ]  ;
-    public $translatable = ['name', 'desc','small_desc'];
-
+        'slug'
+    ];
+    public $translatable = ['name', 'desc', 'small_desc'];
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom(function (Product $model) {
+                return $model->getTranslation('name', 'en');
+            })
+            ->saveSlugsTo('slug');
+    }
 
     //relationships
-    public function variants(){
+    public function variants()
+    {
         return $this->hasMany(ProductVariant::class);
     }
     public function category()
@@ -43,11 +55,13 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
-    public function images(){
+    public function images()
+    {
         return $this->hasMany(ProductImage::class);
     }
 
-    public function tags(){
-        return $this->belongsToMany(Tag::class,'product_tags');
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'product_tags');
     }
 }

@@ -21,5 +21,7 @@ return [
     'updated_successfully' => 'Category updated successfully',
     'error_occurred'       => 'An error occurred, please check your data',
     'no_parent'            => 'No parent category',
+    'icon' => 'Icon',
+'current_icon' => 'Current Icon',
     
 ];
