@@ -1067,12 +1067,13 @@
                                 </span>
                             </a>
                             <ul class="header-sub-menu">
-                                <li><a href="product-info.html">{{ __('site_header.product_details') }}</a></li>
-                                <li><a href="privacy.html">{{ __('site_header.privacy_policy') }}</a></li>
-                                <li><a href="terms.html">{{ __('site_header.terms_condition') }}</a></li>
-                                <li><a href="faq.html">{{ __('site_header.faq') }}</a></li>
-                                <li><a href="product-sidebar.html">{{ __('site_header.shop_category_icon') }}</a></li>
-                                <li><a href="product-sidebar.html">{{ __('site_header.shop_list_view') }}</a></li>
+                                @foreach ($dynamicPages as $dynamicPage)
+                                    <li>
+                                        <a href="{{ route('website.pages.show', $dynamicPage->slug) }}">
+                                            {{ $dynamicPage->title }}
+                                        </a>
+                                    </li>
+                                @endforeach
                             </ul>
                         </li>
                         <li>

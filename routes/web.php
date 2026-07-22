@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\website\HomeController;
+use App\Models\Page;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -20,6 +21,13 @@ Route::group(
         Route::controller(HomeController::class)->group(function () {
             Route::get('/', 'index')->name('home');
         });
+
+        Route::get('/pages/{slug}', function (string $slug) {
+            $page = Page::query()->where('slug', $slug)->firstOrFail();
+
+            return view('website.pages.show', compact('page'));
+        })->name('pages.show');
+
         /*
         |--------------------------------------------------------------------------
         | Guest Routes

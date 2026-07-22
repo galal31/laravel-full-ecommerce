@@ -8,6 +8,7 @@ use App\Http\Controllers\dashboard\CategoriesController;
 use App\Http\Controllers\dashboard\ContactsController;
 use App\Http\Controllers\dashboard\CouponController;
 use App\Http\Controllers\dashboard\FaqController;
+use App\Http\Controllers\dashboard\PagesController;
 use App\Http\Controllers\dashboard\ProductsController;
 use App\Http\Controllers\dashboard\RolesController;
 use App\Http\Controllers\dashboard\SettingsController;
@@ -128,6 +129,9 @@ Route::group(
                     Route::delete('/{id}', 'destroy')->name('destroy');
                 });
             ### end slider management routes ###
+
+            ### start dynamic pages routes ###
+            Route::resource('pages', PagesController::class)->middleware('can:pages');
     
 
 

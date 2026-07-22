@@ -23,4 +23,6 @@ return [
     'manage_products'     => 'Manage Products',
     'attributes'        => 'Attributes',
     'manage_attributes' => 'Manage Attributes',
+    'pages'             => 'Pages',
+    'manage_pages'      => 'Manage Pages',
 ];

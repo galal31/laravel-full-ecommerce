@@ -23,4 +23,6 @@ return [
     'manage_products'     => 'إدارة المنتجات',
     'attributes'        => 'الخصائص',
     'manage_attributes' => 'إدارة الخصائص',
+    'pages'             => 'الصفحات',
+    'manage_pages'      => 'إدارة الصفحات',
 ];
