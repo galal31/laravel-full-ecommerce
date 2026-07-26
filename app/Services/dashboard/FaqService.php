@@ -1,55 +1,37 @@
 <?php
 
-namespace App\services\dashboard;
+namespace App\Services\dashboard;
 
-use App\Http\Requests\dashboard\FaqRequest;
-use App\reposetories\dashboard\FaqRepo;
-use Yajra\DataTables\DataTables;
+use App\Models\Dashboard\Faq;
+use App\Reposetories\dashboard\FaqRepo;
+use Illuminate\Database\Eloquent\Collection;
 
 class FaqService
 {
-    /**
-     * Create a new class instance.
-     */
-    protected $faqRepo;
-    public function __construct(FaqRepo $faqRepo)
+    public function __construct(private FaqRepo $faqRepo) {}
+
+    public function getAll(): Collection
     {
-        $this->faqRepo = $faqRepo;
+        return $this->faqRepo->getAll();
     }
 
-    public function index(){
-        $faqs = $this->faqRepo->index();
-        return DataTables::of($faqs)
-        ->addColumn('actions',function($faq){
-            return view('dashboard.faqs._actions',compact('faq'));
-        })
-        ->editColumn('question',function($faq){
-            return $faq->getTranslation('question',app()->getLocale());
-        })
-        ->editColumn('answer',function($faq){
-            return $faq->getTranslation('answer',app()->getLocale());
-        })
-        ->addIndexColumn()
-        ->make(true);
+    public function store(array $data): Faq
+    {
+        return $this->faqRepo->store($data);
     }
 
-    public function store($data){
-        $faq = $this->faqRepo->store($data);
-        return $faq;
+    public function faqById(int $id): Faq
+    {
+        return $this->faqRepo->findOrFail($id);
     }
 
-    public function faqById($id){
-        $faq = $this->faqRepo->faqById($id);
-        return $faq;
+    public function update(int $id, array $data): Faq
+    {
+        return $this->faqRepo->update($id, $data);
     }
 
-    public function update($id, $data){
-        $faq = $this->faqRepo->update($id, $data);
-        return $faq;
-    }
-
-    public function destroy($id){
-        $faq = $this->faqRepo->destroy($id);
-        return $faq;
+    public function destroy(int $id): Faq
+    {
+        return $this->faqRepo->destroy($id);
     }
 }

@@ -1,38 +1,40 @@
 <?php
 
-namespace App\reposetories\dashboard;
+namespace App\Reposetories\dashboard;
 
 use App\Models\Dashboard\Faq;
+use Illuminate\Database\Eloquent\Collection;
 
 class FaqRepo
 {
-    /**
-     * Create a new class instance.
-     */
-    public function index(){
-        $faqs = Faq::get();
-        return $faqs;
+    public function getAll(): Collection
+    {
+        return Faq::query()->latest()->get();
     }
 
-    public function store($data){
-        $faq = Faq::create($data);
-        return $faq;
+    public function store(array $data): Faq
+    {
+        return Faq::create($data);
     }
 
-    public function faqById($id){
-        $faq = Faq::find($id);
-        return $faq;
+    public function findOrFail(int $id): Faq
+    {
+        return Faq::query()->findOrFail($id);
     }
 
-    public function update($id, $data){
-        $faq = $this->faqById($id);
+    public function update(int $id, array $data): Faq
+    {
+        $faq = $this->findOrFail($id);
         $faq->update($data);
+
         return $faq;
     }
 
-    public function destroy($id){
-        $faq = $this->faqById($id);
+    public function destroy(int $id): Faq
+    {
+        $faq = $this->findOrFail($id);
         $faq->delete();
+
         return $faq;
     }
 }

@@ -5,7 +5,7 @@
                 <div class="header-profile">
                     <a href="user-profile.html"><span>{{ __('site_header.account') }}</span></a>
                     <a href="order.html"><span>{{ __('site_header.track_order') }}</span></a>
-                    <a href="faq.html"><span>{{ __('site_header.support') }}</span></a>
+                    <a href="{{ route('website.faqs.index') }}"><span>{{ __('site_header.support') }}</span></a>
                 </div>
                 <div class="header-profile">
                     @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
@@ -1075,6 +1075,11 @@
                                     </li>
                                 @endforeach
                             </ul>
+                        </li>
+                        <li>
+                            <a href="{{ route('website.faqs.index') }}">
+                                <span class="list-text">{{ __('site_header.faq') }}</span>
+                            </a>
                         </li>
                         <li>
                             <a href="about.html">

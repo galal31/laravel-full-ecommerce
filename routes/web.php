@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\website\HomeController;
 use App\Models\Page;
+use App\Services\dashboard\FaqService;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -27,6 +28,12 @@ Route::group(
 
             return view('website.pages.show', compact('page'));
         })->name('pages.show');
+
+        Route::get('/faqs', function (FaqService $faqService) {
+            $faqs = $faqService->getAll();
+
+            return view('website.faqs.index', compact('faqs'));
+        })->name('faqs.index');
 
         /*
         |--------------------------------------------------------------------------

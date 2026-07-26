@@ -108,7 +108,7 @@
                                 });
                                 
                                 // تحديث الـ DataTable لو موجود في الصفحة بدون ريفريش
-                                if ($.fn.DataTable.isDataTable('#YajraTable')) {
+                                if ($.fn.DataTable && $.fn.DataTable.isDataTable('#YajraTable')) {
                                     $('#YajraTable').DataTable().ajax.reload(null, false);
                                 } else {
                                     // لو الصفحة مفيهاش DataTable، يعمل ريفريش عادي
