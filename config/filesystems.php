@@ -94,6 +94,14 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'pages' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/pages'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage/pages',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
 
         's3' => [
             'driver' => 's3',
