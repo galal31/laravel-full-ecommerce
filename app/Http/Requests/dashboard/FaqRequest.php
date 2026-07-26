@@ -22,16 +22,22 @@ class FaqRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // التأكد إن الحقل الأساسي عبارة عن مصفوفة ومطلوب
-            'question' => 'required|array',
-            'answer' => 'required|array',
+            'question' => ['required', 'array'],
+            'question.ar' => ['required', 'string', 'max:255'],
+            'question.en' => ['required', 'string', 'max:255'],
+            'answer' => ['required', 'array'],
+            'answer.ar' => ['required', 'string'],
+            'answer.en' => ['required', 'string'],
+        ];
+    }
 
-            // تحديد اللغات بشكل صريح
-            'question.ar' => 'required|string|max:255',
-            'question.en' => 'required|string|max:255',
-            
-            'answer.ar' => 'required|string',
-            'answer.en' => 'required|string',
+    public function attributes(): array
+    {
+        return [
+            'question.ar' => __('faqs.question_ar'),
+            'question.en' => __('faqs.question_en'),
+            'answer.ar' => __('faqs.answer_ar'),
+            'answer.en' => __('faqs.answer_en'),
         ];
     }
 }

@@ -4,82 +4,80 @@ namespace App\Http\Controllers\dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\dashboard\FaqRequest;
-use App\services\dashboard\FaqService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log; // استدعاء الـ Log مهم جداً
+use App\Services\dashboard\FaqService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 
 class FaqController extends Controller
 {
-    private $faqService;
+    public function __construct(private FaqService $faqService) {}
 
-    public function __construct(FaqService $faqService)
+    public function index(): View
     {
-        $this->faqService = $faqService;
+        $faqs = $this->faqService->getAll();
+
+        return view('dashboard.faqs.index', compact('faqs'));
     }
 
-    public function index()
+    public function store(FaqRequest $request): JsonResponse
     {
-
-        if (request()->ajax()) {
-            return $this->faqService->index();
-        }
-        return view('dashboard.faqs.index');
-    }
-
-    public function store(FaqRequest $request)
-    {
-        
-        $data = $request->validated();
-        
         try {
-            $this->faqService->store($data);
+            $this->faqService->store($request->validated());
+
             return response()->json([
                 'success' => true,
-                'message' => __('faqs.added_successfully')
+                'message' => __('faqs.added_successfully'),
             ]);
         } catch (\Throwable $th) {
-            // تسجيل الخطأ الفعلي في السيرفر عشان ترجعله وقت الحاجة
-            Log::error('FAQ Store Error: ' . $th->getMessage());
+            Log::error('FAQ Store Error', ['exception' => $th]);
 
-            // إرجاع رد JSON بـ Status 500 عشان الـ AJAX يقراه كخطأ
             return response()->json([
                 'success' => false,
-                'message' => __('messages.error')
+                'message' => __('faqs.error_occurred'),
             ], 500);
         }
     }
 
-    public function update(FaqRequest $request, $id)
+    public function update(FaqRequest $request, int $id): JsonResponse
     {
-        $data = $request->validated();
         try {
-            $this->faqService->update($id, $data);
+            $this->faqService->update($id, $request->validated());
+
             return response()->json([
                 'success' => true,
-                'message' => __('faqs.updated_successfully')
+                'message' => __('faqs.updated_successfully'),
             ]);
+        } catch (ModelNotFoundException $th) {
+            throw $th;
         } catch (\Throwable $th) {
-            Log::error('FAQ Update Error (ID: ' . $id . '): ' . $th->getMessage());
+            Log::error('FAQ Update Error', ['faq_id' => $id, 'exception' => $th]);
+
             return response()->json([
                 'success' => false,
-                'message' => __('messages.error')
+                'message' => __('faqs.error_occurred'),
             ], 500);
         }
     }
 
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
         try {
             $this->faqService->destroy($id);
+
             return response()->json([
                 'success' => true,
-                'message' => __('faqs.deleted_successfully')
+                'message' => __('faqs.deleted_successfully'),
             ]);
+        } catch (ModelNotFoundException $th) {
+            throw $th;
         } catch (\Throwable $th) {
-            Log::error('FAQ Delete Error (ID: ' . $id . '): ' . $th->getMessage());
+            Log::error('FAQ Delete Error', ['faq_id' => $id, 'exception' => $th]);
+
             return response()->json([
                 'success' => false,
-                'message' => __('messages.error')
+                'message' => __('faqs.error_occurred'),
             ], 500);
         }
     }

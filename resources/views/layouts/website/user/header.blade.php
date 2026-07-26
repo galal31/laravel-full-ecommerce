@@ -5,7 +5,7 @@
                 <div class="header-profile">
                     <a href="user-profile.html"><span>{{ __('site_header.account') }}</span></a>
                     <a href="order.html"><span>{{ __('site_header.track_order') }}</span></a>
-                    <a href="faq.html"><span>{{ __('site_header.support') }}</span></a>
+                    <a href="{{ route('website.faqs.index') }}"><span>{{ __('site_header.support') }}</span></a>
                 </div>
                 <div class="header-profile">
                     @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
@@ -1067,13 +1067,19 @@
                                 </span>
                             </a>
                             <ul class="header-sub-menu">
-                                <li><a href="product-info.html">{{ __('site_header.product_details') }}</a></li>
-                                <li><a href="privacy.html">{{ __('site_header.privacy_policy') }}</a></li>
-                                <li><a href="terms.html">{{ __('site_header.terms_condition') }}</a></li>
-                                <li><a href="faq.html">{{ __('site_header.faq') }}</a></li>
-                                <li><a href="product-sidebar.html">{{ __('site_header.shop_category_icon') }}</a></li>
-                                <li><a href="product-sidebar.html">{{ __('site_header.shop_list_view') }}</a></li>
+                                @foreach ($dynamicPages as $dynamicPage)
+                                    <li>
+                                        <a href="{{ route('website.pages.show', $dynamicPage->slug) }}">
+                                            {{ $dynamicPage->title }}
+                                        </a>
+                                    </li>
+                                @endforeach
                             </ul>
+                        </li>
+                        <li>
+                            <a href="{{ route('website.faqs.index') }}">
+                                <span class="list-text">{{ __('site_header.faq') }}</span>
+                            </a>
                         </li>
                         <li>
                             <a href="about.html">

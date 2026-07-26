@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Page;
 use App\Models\Dashboard\Admin;
 use App\Models\Dashboard\Role;
 use App\Models\Dashboard\Setting;
@@ -25,6 +26,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        View::composer('layouts.website.user.header', function ($view) {
+            $pages = Page::query()
+                ->select(['title', 'slug'])
+                ->orderBy('title')
+                ->get();
+
+            $view->with('dynamicPages', $pages);
+        });
+
         View::composer('dashboard.*', function ($view) {
 
             $roles_count = Cache::rememberForever('dashboard_roles', function () {

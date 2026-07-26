@@ -102,6 +102,16 @@
             </li>
             @endcan
 
+            {{-- الصفحات (Pages) --}}
+            @can('pages')
+            <li class="nav-item">
+                <a href="#"><i class="la la-file-text"></i><span class="menu-title">{{ __('sidebar.pages') }}</span></a>
+                <ul class="menu-content">
+                    <li><a class="menu-item" href="{{ route('dashboard.pages.index') }}">{{ __('sidebar.manage_pages') }}</a></li>
+                </ul>
+            </li>
+            @endcan
+
             {{-- الإعدادات (Settings) --}}
             @can('settings')
             <li class="nav-item">
