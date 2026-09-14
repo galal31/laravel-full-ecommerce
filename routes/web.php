@@ -6,6 +6,7 @@ use App\Http\Controllers\website\BrandController;
 use App\Http\Controllers\website\CategoryController;
 use App\Http\Controllers\website\HomeController;
 use App\Http\Controllers\website\ProductController;
+use App\Http\Controllers\website\WishlistController;
 use App\Models\Page;
 use App\Services\dashboard\FaqService;
 use Illuminate\Support\Facades\Route;
@@ -80,9 +81,12 @@ Route::group(
         |--------------------------------------------------------------------------
         | المستخدم لازم يكون عامل login
         */
-        Route::middleware('auth')->group(function () {
+        Route::middleware('auth:web')->group(function () {
+            Route::get('/wishlist', [WishlistController::class, 'index'])
+                ->name('wishlist.index');
 
-
+            Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])
+                ->name('wishlist.toggle');
 
             Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 

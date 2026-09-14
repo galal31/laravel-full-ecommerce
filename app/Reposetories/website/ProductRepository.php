@@ -29,6 +29,7 @@ class ProductRepository
                 'variants.attributeValues.attribute:id,name',
             ])
             ->withStorefrontData()
+            ->withWishlistStatus()
             ->where('slug', $slug)
             ->firstOrFail();
     }

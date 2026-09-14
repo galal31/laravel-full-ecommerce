@@ -327,6 +327,25 @@
                                             </span>
                                         @endif
 
+                                        <button
+                                            type="button"
+                                            class="catalog-wishlist-button wishlist-toggle {{ $item->is_wishlisted ? 'is-active' : '' }}"
+                                            data-product-id="{{ $item->id }}"
+                                            data-url="{{ route('website.wishlist.toggle') }}"
+                                            data-login-url="{{ route('website.login') }}"
+                                            aria-pressed="{{ $item->is_wishlisted ? 'true' : 'false' }}"
+                                            aria-label="{{ $item->is_wishlisted
+                                                ? __('website.remove_from_wishlist')
+                                                : __('website.add_to_wishlist') }}"
+                                            title="{{ $item->is_wishlisted
+                                                ? __('website.remove_from_wishlist')
+                                                : __('website.add_to_wishlist') }}"
+                                        >
+                                            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"/>
+                                            </svg>
+                                        </button>
+
                                         <img
                                             src="{{ $mainImage?->image_url ?? asset('website-assets/assets/images/homepage-one/product-img/product-img-1.webp') }}"
                                             alt="{{ $item->name }}"
@@ -422,3 +441,68 @@
         <div class="catalog-action-message" role="status" aria-live="polite"></div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        $(function () {
+            const messageBox = $('.catalog-action-message');
+            let messageTimer;
+
+            function showMessage(message) {
+                messageBox.text(message).addClass('is-visible');
+
+                clearTimeout(messageTimer);
+                messageTimer = setTimeout(function () {
+                    messageBox.removeClass('is-visible');
+                }, 2200);
+            }
+
+            $('.wishlist-toggle').on('click', function () {
+                const button = $(this);
+
+                button.prop('disabled', true);
+
+                $.ajax({
+                    url: button.attr('data-url'),
+                    type: 'POST',
+                    data: {
+                        product_id: button.attr('data-product-id'),
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    success: function (data) {
+                        button.toggleClass('is-active', data.added);
+                        button.attr('aria-pressed', data.added);
+                        button.attr(
+                            'aria-label',
+                            data.added
+                                ? @json(__('website.remove_from_wishlist'))
+                                : @json(__('website.add_to_wishlist'))
+                        );
+                        button.attr('title', button.attr('aria-label'));
+
+                        if (window.Livewire) {
+                            Livewire.dispatch(
+                                data.added ? 'wishlist_item_added' : 'wishlist_item_removed'
+                            );
+                        }
+
+                        showMessage(data.message);
+                    },
+                    error: function (response) {
+                        if (response.status === 401) {
+                            window.location.href = button.attr('data-login-url');
+                            return;
+                        }
+
+                        showMessage(@json(__('website.request_failed')));
+                    },
+                    complete: function () {
+                        button.prop('disabled', false);
+                    },
+                });
+            });
+        });
+    </script>
+@endpush

@@ -1,11 +1,13 @@
 <?php
 
+use App\Services\website\WishlistService;
 use Livewire\Component;
 use Livewire\Attributes\Computed; // استدعاء السمة الجديدة
 
 new class extends Component
 {
     public $product;
+    public bool $is_wishlisted = false;
     public string $displayedImage;
     public array $galleryImages = [];
     // تم حذف public array $variantOptions لتقليل حجم الـ Payload
@@ -21,6 +23,7 @@ new class extends Component
     public function mount($product): void
     {
         $this->product = $product;
+        $this->is_wishlisted = (bool) ($product->is_wishlisted ?? false);
         $this->hasVariants = (bool) $product->has_variants;
         $this->productIsInStock = $product->isInStock();
         $this->startingPrice = (float) $product->variants_min_price;
@@ -100,6 +103,24 @@ new class extends Component
         $this->selectedVariantPrice = $variant['price'];
         $this->selectedVariantStock = $variant['stock'];
         $this->displayedImage = $variant['image'];
+    }
+
+    public function toggleWishlist(WishlistService $wishlistService): void
+    {
+        if (! auth()->check()) {
+            session()->flash('message', __('website.login_to_add_to_wishlist'));
+
+            return;
+        }
+
+        $this->is_wishlisted = $wishlistService->toggle(
+            (int) auth()->id(),
+            (int) $this->product->id
+        );
+
+        $this->dispatch(
+            $this->is_wishlisted ? 'wishlist_item_added' : 'wishlist_item_removed'
+        );
     }
 
 };
@@ -615,6 +636,32 @@ new class extends Component
         </button>
     @endforeach
 @endif
+
+                        <p class="product-details-message" role="status" aria-live="polite">
+                            @if (session()->has('message'))
+                                {{ session('message') }}
+                            @endif
+                        </p>
+
+                        <div class="product-details-actions">
+                            <button
+                                type="button"
+                                class="product-details-wishlist {{ $this->is_wishlisted ? 'is-active' : '' }}"
+                                aria-pressed="{{ $this->is_wishlisted ? 'true' : 'false' }}"
+                                wire:click="toggleWishlist"
+                                wire:loading.attr="disabled"
+                            >
+                                <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z" />
+                                </svg>
+
+                                <span>
+                                    {{ $this->is_wishlisted
+                                        ? __('website.remove_from_wishlist')
+                                        : __('website.add_to_wishlist') }}
+                                </span>
+                            </button>
+                        </div>
 
                     </div>
                 </div>

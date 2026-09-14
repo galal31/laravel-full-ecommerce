@@ -47,6 +47,7 @@ class CatalogRepository
             ])
             ->with(['brand:id,name', 'category:id,name'])
             ->withStorefrontData()
+            ->withWishlistStatus()
             ->latest();
     }
 }

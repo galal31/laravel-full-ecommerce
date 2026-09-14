@@ -44,6 +44,11 @@ class Product extends Model
         return $this->hasMany(ProductImage::class);
     }
 
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', true);
@@ -70,6 +75,16 @@ class Product extends Model
             ->withCount('variants')
             ->withMin('variants', 'price')
             ->active();
+    }
+
+    public function scopeWithWishlistStatus(Builder $query, ?int $userId = null): Builder
+    {
+        $resolvedUserId = $userId ?? auth()->id() ?? 0;
+
+        return $query->withExists([
+            'wishlists as is_wishlisted' => fn ($wishlistQuery) => $wishlistQuery
+                ->where('user_id', $resolvedUserId),
+        ]);
     }
 
     public function tags()
