@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\website\WishlistService;
+use App\Services\website\CartService;
 use Livewire\Component;
 use Livewire\Attributes\Computed; // استدعاء السمة الجديدة
 
@@ -18,6 +19,7 @@ new class extends Component
     public bool $hasVariants = false;
     public bool $productIsInStock = false;
     public float $startingPrice = 0;
+    public int $quantity = 1;
 
 
     public function mount($product): void
@@ -121,6 +123,35 @@ new class extends Component
         $this->dispatch(
             $this->is_wishlisted ? 'wishlist_item_added' : 'wishlist_item_removed'
         );
+    }
+
+    public function addToCart(CartService $cartService): void
+    {
+        if (! auth()->check()) {
+            session()->flash('cart_error', __('website.login_to_add_to_cart'));
+
+            return;
+        }
+
+        try {
+            $result = $cartService->add(
+                (int) auth()->id(),
+                (int) $this->product->id,
+                $this->selectedVariantId,
+                $this->quantity
+            );
+
+            if ($result['created']) {
+                $this->dispatch('cart_item_added');
+                session()->flash('cart_success', __('website.cart_added_successfully'));
+
+                return;
+            }
+
+            session()->flash('cart_success', __('website.cart_quantity_updated'));
+        } catch (\DomainException $exception) {
+            session()->flash('cart_error', $exception->getMessage());
+        }
     }
 
 };
@@ -644,6 +675,32 @@ new class extends Component
                         </p>
 
                         <div class="product-details-actions">
+                            <div class="product-details-quantity">
+                                <label for="product-quantity">{{ __('website.quantity') }}</label>
+                                <input
+                                    id="product-quantity"
+                                    type="number"
+                                    min="1"
+                                    wire:model="quantity"
+                                    aria-label="{{ __('website.quantity') }}"
+                                >
+                            </div>
+
+                            @if ($productIsInStock)
+                                <button
+                                    type="button"
+                                    class="product-details-cart"
+                                    wire:click="addToCart"
+                                    wire:loading.attr="disabled"
+                                >
+                                    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M2.25 2.25h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                                    </svg>
+
+                                    <span>{{ __('website.add_to_cart') }}</span>
+                                </button>
+                            @endif
+
                             <button
                                 type="button"
                                 class="product-details-wishlist {{ $this->is_wishlisted ? 'is-active' : '' }}"
@@ -662,6 +719,16 @@ new class extends Component
                                 </span>
                             </button>
                         </div>
+
+                        @if (session()->has('cart_success'))
+                            <p class="product-details-message is-success" role="status" aria-live="polite">
+                                {{ session('cart_success') }}
+                            </p>
+                        @elseif (session()->has('cart_error'))
+                            <p class="product-details-message is-error" role="alert" aria-live="assertive">
+                                {{ session('cart_error') }}
+                            </p>
+                        @endif
 
                     </div>
                 </div>

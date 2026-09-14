@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\website\BrandController;
+use App\Http\Controllers\website\CartController;
 use App\Http\Controllers\website\CategoryController;
 use App\Http\Controllers\website\HomeController;
 use App\Http\Controllers\website\ProductController;
@@ -82,6 +83,9 @@ Route::group(
         | المستخدم لازم يكون عامل login
         */
         Route::middleware('auth:web')->group(function () {
+            Route::get('/cart', [CartController::class, 'index'])
+                ->name('cart.index');
+
             Route::get('/wishlist', [WishlistController::class, 'index'])
                 ->name('wishlist.index');
 

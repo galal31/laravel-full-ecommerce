@@ -2,8 +2,8 @@
 
 namespace App\Models\Dashboard;
 
+use App\Models\CartItem;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class ProductVariant extends Model
 {
@@ -23,6 +23,11 @@ class ProductVariant extends Model
     public function images()
     {
         return $this->hasMany(VariantImage::class, 'product_variant_id');
+    }
+
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
     }
 
 
