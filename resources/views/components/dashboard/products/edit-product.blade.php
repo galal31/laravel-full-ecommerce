@@ -145,8 +145,10 @@ new class extends Component {
                 // التحقق من الخصومات في حال تفعيلها
                 'has_discount' => 'boolean',
                 'discount_percentage' => $this->has_discount ? 'required|integer|min:1|max:99' : 'nullable',
-                'start_discount' => $this->has_discount ? 'required|date' : 'nullable',
-                'end_discount' => $this->has_discount ? 'required|date|after_or_equal:start_discount' : 'nullable',
+                'start_discount' => ['nullable', 'date'],
+                'end_discount' => $this->start_discount
+                    ? ['nullable', 'date', 'after_or_equal:start_discount']
+                    : ['nullable', 'date'],
             ],
             // قواعد الخطوة الثالثة: الصور
             3 => [

@@ -28,8 +28,7 @@ class BrandController extends Controller
                 ->addIndexColumn()
                 ->addColumn('name', fn($row) => $row->getTranslation('name', app()->getLocale()))
                 ->addColumn('logo', function ($row) {
-                    $url = $row->logo ? asset('storage/brands/' . $row->logo) : asset('images/default.png');
-                    return '<img src="' . $url . '" alt="logo" width="50" height="50" class="img-thumbnail rounded">';
+                    return '<img src="' . $row->logo . '" alt="logo" width="50" height="50" class="img-thumbnail rounded">';
                 })
                 ->addColumn('status', function ($row) {
                     $class = $row->getRawOriginal('status') ? 'success' : 'danger';

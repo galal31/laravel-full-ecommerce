@@ -2,7 +2,12 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\website\BrandController;
+use App\Http\Controllers\website\CartController;
+use App\Http\Controllers\website\CategoryController;
 use App\Http\Controllers\website\HomeController;
+use App\Http\Controllers\website\ProductController;
+use App\Http\Controllers\website\WishlistController;
 use App\Models\Page;
 use App\Services\dashboard\FaqService;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +27,21 @@ Route::group(
         Route::controller(HomeController::class)->group(function () {
             Route::get('/', 'index')->name('home');
         });
+
+        Route::get('/categories', [CategoryController::class, 'index'])
+            ->name('categories.index');
+
+        Route::get('/brands', [BrandController::class, 'index'])
+            ->name('brands.index');
+
+        Route::get('/brand/{slug}/products', [BrandController::class, 'getProductsByBrand'])
+            ->name('brands.products');
+
+        Route::get('/category/{slug}/products', [CategoryController::class, 'getProductsByCategory'])
+            ->name('categories.products');
+
+        Route::get('/products/{slug}', [ProductController::class, 'show'])
+            ->name('products.show');
 
         Route::get('/pages/{slug}', function (string $slug) {
             $page = Page::query()->where('slug', $slug)->firstOrFail();
@@ -62,9 +82,15 @@ Route::group(
         |--------------------------------------------------------------------------
         | المستخدم لازم يكون عامل login
         */
-        Route::middleware('auth')->group(function () {
+        Route::middleware('auth:web')->group(function () {
+            Route::get('/cart', [CartController::class, 'index'])
+                ->name('cart.index');
 
+            Route::get('/wishlist', [WishlistController::class, 'index'])
+                ->name('wishlist.index');
 
+            Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])
+                ->name('wishlist.toggle');
 
             Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 

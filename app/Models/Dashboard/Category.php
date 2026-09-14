@@ -4,6 +4,7 @@ namespace App\Models\Dashboard;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
 
 class Category extends Model
@@ -20,11 +21,16 @@ class Category extends Model
         return $this->hasMany(Category::class,'parent_id');
     }
 
-    // getteer for icon 
     protected function icon(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => asset('storage/categories/' . $value),
+            get: function (?string $value): string {
+                $fileName = $value && Storage::disk('categories')->exists($value)
+                    ? $value
+                    : 'default.png';
+
+                return asset('storage/categories/'.$fileName);
+            },
         );
     }
     protected $casts = [

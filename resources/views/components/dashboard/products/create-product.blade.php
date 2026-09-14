@@ -104,8 +104,10 @@ new class extends Component {
 
             if ($this->has_discount == 1) {
                 $rules['discount'] = ['required', 'numeric', 'min:1'];
-                $rules['start_discount'] = ['required', 'date'];
-                $rules['end_discount'] = ['required', 'date', 'after_or_equal:start_discount'];
+                $rules['start_discount'] = ['nullable', 'date'];
+                $rules['end_discount'] = $this->start_discount
+                    ? ['nullable', 'date', 'after_or_equal:start_discount']
+                    : ['nullable', 'date'];
             }
 
             $this->validate($rules);

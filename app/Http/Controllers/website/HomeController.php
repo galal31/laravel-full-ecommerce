@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\website;
 
 use App\Http\Controllers\Controller;
-use App\Models\Dashboard\Slider;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
+use App\Services\website\HomeService;
+use Illuminate\View\View;
 
 class HomeController extends Controller
 {
-    public function index(){
-        $sliders = Cache::rememberForever('sliders',function(){
-            return Slider::all();
-        });
-        return view('website.home', compact('sliders'));
+    public function __construct(
+        private HomeService $homeService
+    ) {}
+
+    public function index(): View
+    {
+        return view('website.home', $this->homeService->getHomeData());
     }
 }
