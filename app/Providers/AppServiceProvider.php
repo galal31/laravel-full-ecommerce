@@ -6,6 +6,7 @@ use App\Models\Page;
 use App\Models\Dashboard\Admin;
 use App\Models\Dashboard\Role;
 use App\Models\Dashboard\Setting;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -26,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Paginator::useBootstrapFive();
+
         View::composer('layouts.website.user.header', function ($view) {
             $pages = Page::query()
                 ->select(['title', 'slug'])

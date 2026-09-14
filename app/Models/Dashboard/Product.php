@@ -2,6 +2,7 @@
 
 namespace App\Models\Dashboard;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Spatie\Translatable\HasTranslations;
@@ -41,6 +42,34 @@ class Product extends Model
     public function images()
     {
         return $this->hasMany(ProductImage::class);
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('status', true);
+    }
+
+    public function scopeWithImages(Builder $query): Builder
+    {
+        return $query->with([
+            'images' => fn ($imageQuery) => $imageQuery
+                ->select(['id', 'product_id', 'file_name'])
+                ->oldest('id'),
+        ]);
+    }
+
+    public function scopeWithStorefrontData(Builder $query): Builder
+    {
+        return $query
+            ->withImages()
+            ->withExists([
+                'variants as has_variants',
+                'variants as variants_is_in_stock' => fn ($variantQuery) => $variantQuery
+                    ->where('stock', '>', 0),
+            ])
+            ->withCount('variants')
+            ->withMin('variants', 'price')
+            ->active();
     }
 
     public function tags()
@@ -88,5 +117,18 @@ class Product extends Model
         return (int) Carbon::today()->diffInDays(
             Carbon::parse($this->end_discount)->startOfDay()
         );
+    }
+
+    public function isInStock(): bool
+    {
+        if (! $this->available_in_stock) {
+            return false;
+        }
+
+        if ($this->has_variants ?? false) {
+            return ($this->variants_is_in_stock ?? 0) > 0;
+        }
+
+        return ! $this->manage_stock || $this->quantity > 0;
     }
 }
