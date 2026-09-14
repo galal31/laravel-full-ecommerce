@@ -3,6 +3,7 @@
 namespace App\Models\Dashboard;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Spatie\Translatable\HasTranslations;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -45,5 +46,47 @@ class Product extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class, 'product_tags');
+    }
+
+    public function hasActiveDiscount(): bool
+    {
+        if ($this->discount === null || (float) $this->discount <= 0) {
+            return false;
+        }
+
+        $today = Carbon::today();
+        $startsAt = $this->start_discount
+            ? Carbon::parse($this->start_discount)->startOfDay()
+            : null;
+        $endsAt = $this->end_discount
+            ? Carbon::parse($this->end_discount)->endOfDay()
+            : null;
+
+        return ($startsAt === null || $today->greaterThanOrEqualTo($startsAt))
+            && ($endsAt === null || $today->lessThanOrEqualTo($endsAt));
+    }
+
+    public function getPriceAfterDiscount(): float
+    {
+        $price = (float) $this->price;
+
+        if (! $this->hasActiveDiscount()) {
+            return $price;
+        }
+
+        $discountAmount = $price * ((float) $this->discount / 100);
+
+        return round(max(0, $price - $discountAmount), 2);
+    }
+
+    public function getDiscountDaysRemaining(): ?int
+    {
+        if (! $this->hasActiveDiscount() || ! $this->end_discount) {
+            return null;
+        }
+
+        return (int) Carbon::today()->diffInDays(
+            Carbon::parse($this->end_discount)->startOfDay()
+        );
     }
 }

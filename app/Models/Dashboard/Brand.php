@@ -4,6 +4,7 @@ namespace App\Models\Dashboard;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
 
 class Brand extends Model
@@ -23,6 +24,19 @@ class Brand extends Model
     public function status():Attribute{
         return Attribute::make(
             get: fn ($value) => $value == 1 ? __('brands.active') : __('brands.inactive'),
+        );
+    }
+
+    protected function logo(): Attribute
+    {
+        return Attribute::make(
+            get: function (?string $value): string {
+                $fileName = $value && Storage::disk('brands')->exists($value)
+                    ? $value
+                    : 'default.png';
+
+                return asset('storage/brands/'.$fileName);
+            },
         );
     }
 }

@@ -48,8 +48,8 @@ class ProductService
                 'quantity' => (!$data['has_variants'] && $data['manage_stock']) ? $data['quantity'] : null,
                 'manage_stock' => $data['has_variants'] ? 0 : $data['manage_stock'],
                 'discount' => $data['has_discount'] ? $data['discount'] : null,
-                'start_discount' => $data['has_discount'] ? $data['start_discount'] : null,
-                'end_discount' => $data['has_discount'] ? $data['end_discount'] : null,
+                'start_discount' => $data['has_discount'] ? ($data['start_discount'] ?? null) : null,
+                'end_discount' => $data['has_discount'] ? ($data['end_discount'] ?? null) : null,
                 'name' => $data['name'],
                 'small_desc' => $data['small_desc'],
                 'desc' => $data['desc'],
@@ -174,8 +174,8 @@ class ProductService
                 'manage_stock'       => $data['has_variants'] ? 0 : $data['manage_stock'],
                 'has_discount'       => $data['has_discount'],
                 'discount'           => $data['has_discount'] ? $data['discount_percentage'] : null,
-                'start_discount'     => $data['has_discount'] ? $data['start_discount'] : null,
-                'end_discount'       => $data['has_discount'] ? $data['end_discount'] : null,
+                'start_discount'     => $data['has_discount'] ? ($data['start_discount'] ?? null) : null,
+                'end_discount'       => $data['has_discount'] ? ($data['end_discount'] ?? null) : null,
                 'available_for'      => $data['available_for'],
             ];
 

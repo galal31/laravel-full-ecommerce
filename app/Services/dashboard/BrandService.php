@@ -71,7 +71,7 @@ class BrandService
         return DB::transaction(function () use ($id) {
             $brand = $this->brandRepo->findById($id);
             
-            if ($brand->logo) {
+            if ($brand->getRawOriginal('logo')) {
                 $this->deleteFile($brand->getRawOriginal('logo'), 'brands');
             }
 
