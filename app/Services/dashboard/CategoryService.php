@@ -4,6 +4,7 @@ namespace App\Services\dashboard;
 
 use App\Models\Dashboard\Category;
 use App\Reposetories\dashboard\CategoryRepo;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -58,6 +59,8 @@ class CategoryService
     {
         try {
             $this->categoryRepo->toggleStatus($id);
+            Cache::forget('home_categories');
+
             return true;
 
         } catch (\Throwable $th) {
@@ -69,19 +72,26 @@ class CategoryService
     public function store($data)
     {
         $cat = $this->categoryRepo->store($data);
+        Cache::forget('home_categories');
+
         return $cat;
     }
 
     public function update($id, $data)
     {
         $cat = $this->categoryRepo->update($id, $data);
+        Cache::forget('home_categories');
+
         return $cat;
     }
 
     public function destroy($id)
     {
         try {
-            return $this->categoryRepo->destroy($id);
+            $category = $this->categoryRepo->destroy($id);
+            Cache::forget('home_categories');
+
+            return $category;
         } catch (\Throwable $th) {
             Log::error('category delete error'.$id.' '.$th->getMessage());
             return false;

@@ -4,6 +4,7 @@ namespace App\Services\dashboard;
 
 use App\Reposetories\dashboard\BrandRepository;
 use App\Traits\UploadFileTrait;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -30,7 +31,7 @@ class BrandService
         // ليه استخدمنا DB::transaction؟
         // لو رفعنا الصورة بنجاح بس الداتا بيز ضربت Error، الصورة هتفضل متعلقة في السيرفر بدون داتا. 
         // الـ transaction بيضمن إن يا إما كل حاجة تتم (رفع صورة + حفظ داتا)، يا إما يلغي كل حاجة لو حصل خطأ.
-        return DB::transaction(function () use ($request) {
+        $brand = DB::transaction(function () use ($request) {
             
             // استبعاد الداتا اللي ملهاش عمود في الداتا بيز
             $data = $request->except(['_token', 'logo']);
@@ -47,11 +48,15 @@ class BrandService
 
             return $this->brandRepo->create($data);
         });
+
+        Cache::forget('home_brands');
+
+        return $brand;
     }
 
     public function updateBrand($id, $request)
     {
-        return DB::transaction(function () use ($id, $request) {
+        $brand = DB::transaction(function () use ($id, $request) {
             $brand = $this->brandRepo->findById($id);
             $data = $request->except(['_token', '_method', 'logo']);
 
@@ -64,11 +69,15 @@ class BrandService
             $this->brandRepo->update($brand, $data);
             return $brand;
         });
+
+        Cache::forget('home_brands');
+
+        return $brand;
     }
 
     public function deleteBrand($id)
     {
-        return DB::transaction(function () use ($id) {
+        $deleted = DB::transaction(function () use ($id) {
             $brand = $this->brandRepo->findById($id);
             
             if ($brand->getRawOriginal('logo')) {
@@ -77,6 +86,10 @@ class BrandService
 
             return $this->brandRepo->delete($brand);
         });
+
+        Cache::forget('home_brands');
+
+        return $deleted;
     }
 
     public function toggleStatus($id)
@@ -84,6 +97,10 @@ class BrandService
         $brand = $this->brandRepo->findById($id);
         // dd($brand->getRawOriginal('status'));
         $current_status = $brand->getRawOriginal('status');
-        return $this->brandRepo->update($brand, ['status' => !$current_status]);
+        $updated = $this->brandRepo->update($brand, ['status' => !$current_status]);
+
+        Cache::forget('home_brands');
+
+        return $updated;
     }
 }
