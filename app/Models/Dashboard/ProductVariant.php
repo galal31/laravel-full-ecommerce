@@ -9,11 +9,7 @@ class ProductVariant extends Model
 {
     protected $table = 'product_variants';
 
-    protected $fillable = [
-        'product_id',
-        'price',
-        'stock',
-    ];
+    protected $fillable = ['product_id', 'price', 'stock'];
 
     public function product()
     {

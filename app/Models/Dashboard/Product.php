@@ -11,25 +11,7 @@ class Product extends Model
 {
     use HasTranslations;
     use HasSlug;
-    protected $fillable = [
-        'category_id',
-        'brand_id',
-        'name',
-        'small_desc',
-        'desc',
-        'status',
-        'sku',
-        'available_for',
-        'views',
-        'price',
-        'discount',
-        'start_discount',
-        'end_discount',
-        'manage_stock',
-        'quantity',
-        'available_in_stock',
-        'slug'
-    ];
+    protected $fillable = ['category_id', 'brand_id', 'name', 'small_desc', 'desc', 'status', 'sku', 'available_for', 'views', 'price', 'discount', 'start_discount', 'end_discount', 'manage_stock', 'quantity', 'available_in_stock', 'slug'];
     public $translatable = ['name', 'desc', 'small_desc'];
     public function getSlugOptions(): SlugOptions
     {
