@@ -3,19 +3,29 @@
         <div class="container">
             <div class="header-top">
                 <div class="header-profile">
-                    <a href="user-profile.html"><span>{{ __('site_header.account') }}</span></a>
-                    <a href="order.html"><span>{{ __('site_header.track_order') }}</span></a>
+                    @guest
+                        <a href="{{ route('website.login') }}">
+                            <span>{{ __('site_header.account') }}</span>
+                        </a>
+                    @else
+                        <form action="{{ route('website.logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" style="border: 0; background: transparent; padding: 0;">
+                                {{ __('site_header.logout') }}
+                            </button>
+                        </form>
+                    @endguest
                     <a href="{{ route('website.faqs.index') }}"><span>{{ __('site_header.support') }}</span></a>
                 </div>
                 <div class="header-profile">
                     @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
                         <a href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
-                            <span>{{ $localeCode === 'ar' ? '🇪🇬' : '🇺🇸' }}</span>
+                            <span>{{ strtoupper($localeCode) }}</span>
                         </a>
                     @endforeach
                 </div>
                 <div class="header-contact d-none d-lg-block">
-                    <a href="#">
+                    <a href="tel:+006454568">
                         <span>{{ __('site_header.need_help_call_us') }}</span>
                         <span class="contact-number">+ 00645 4568</span>
                     </a>
@@ -27,7 +37,7 @@
         <div class="container">
             <div class="header-center">
                 <div class="logo">
-                    <a href="index-2.html">
+                    <a href="{{ route('website.home') }}">
                         <img src="{{ asset('website-assets/assets/images/logos/logo.webp') }}" alt="logo">
                     </a>
                 </div>
@@ -61,15 +71,18 @@
                                         <input type="text" placeholder="{{ __('site_header.search_products') }}">
                                         <div class="divider"></div>
                                         <button type="button">{{ __('site_header.all_categories') }}</button>
-                                        <a href="#" class="shop-btn">{{ __('site_header.search') }}</a>
+                                        <button type="button" class="shop-btn" disabled>
+                                            {{ __('site_header.search') }}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
 
                         </div>
                     </div>
+                    @if (Route::has('website.compare.index'))
                     <div class="header-compaire">
-                        <a href="compaire.html" class="cart-item">
+                        <a href="{{ route('website.compare.index') }}" class="cart-item">
                             <span>
                                 <svg width="34" height="27" viewBox="0 0 34 27" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -93,49 +106,13 @@
                             </span>
                         </a>
                     </div>
-                    <div class="header-favourite">
-                        <a href="wishlist.html" class="cart-item">
-                            <span>
-                                <svg width="35" height="27" viewBox="0 0 35 27" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M11.4047 8.54989C11.6187 8.30247 11.8069 8.07783 12.0027 7.86001C15.0697 4.45162 20.3879 5.51717 22.1581 9.60443C23.4189 12.5161 22.8485 15.213 20.9965 17.6962C19.6524 19.498 17.95 20.9437 16.2722 22.4108C15.0307 23.4964 13.774 24.5642 12.5246 25.6408C11.6986 26.3523 11.1108 26.3607 10.2924 25.6397C8.05177 23.6657 5.79225 21.7125 3.59029 19.6964C2.35865 18.5686 1.33266 17.2553 0.638823 15.7086C-0.626904 12.8872 0.0324709 9.41204 2.22306 7.41034C4.84011 5.01855 8.81757 5.36918 11.1059 8.19281C11.1968 8.30475 11.2907 8.41404 11.4047 8.54989Z"
-                                        fill="#6E6D79" />
-                                    <circle cx="26.7662" cy="8" r="8" fill="#AE1C9A" />
-                                    <path
-                                        d="M26.846 13.1392C26.1632 13.1392 25.5534 13.0215 25.0164 12.7862C24.4828 12.5509 24.0602 12.2244 23.7487 11.8068C23.4404 11.3859 23.2747 10.8987 23.2515 10.3452H24.8126C24.8325 10.6468 24.9336 10.9086 25.1159 11.1307C25.3015 11.3494 25.5434 11.5185 25.8417 11.6378C26.14 11.7571 26.4715 11.8168 26.836 11.8168C27.2371 11.8168 27.5917 11.7472 27.9 11.608C28.2115 11.4687 28.4551 11.2749 28.6308 11.0263C28.8065 10.7744 28.8943 10.4844 28.8943 10.1562C28.8943 9.81487 28.8065 9.51491 28.6308 9.25639C28.4584 8.99455 28.2049 8.78906 27.8701 8.63991C27.5387 8.49077 27.1377 8.41619 26.667 8.41619H25.8069V7.16335H26.667C27.0448 7.16335 27.3763 7.09541 27.6613 6.95952C27.9497 6.82363 28.1751 6.63471 28.3375 6.39276C28.4999 6.14749 28.5811 5.8608 28.5811 5.53267C28.5811 5.2178 28.5098 4.94437 28.3673 4.71236C28.2281 4.47704 28.0292 4.29309 27.7707 4.16051C27.5155 4.02794 27.2139 3.96165 26.8659 3.96165C26.5344 3.96165 26.2245 4.02296 25.9362 4.1456C25.6511 4.26491 25.4191 4.43726 25.2402 4.66264C25.0612 4.88471 24.9651 5.15151 24.9518 5.46307H23.4653C23.4819 4.91288 23.6443 4.42898 23.9525 4.01136C24.2641 3.59375 24.6751 3.26728 25.1855 3.03196C25.6959 2.79664 26.2627 2.67898 26.8858 2.67898C27.5387 2.67898 28.1021 2.80658 28.5761 3.06179C29.0534 3.31368 29.4213 3.65009 29.6798 4.07102C29.9416 4.49195 30.0709 4.95265 30.0676 5.45312C30.0709 6.0232 29.9118 6.5071 29.5903 6.90483C29.2721 7.30256 28.8479 7.56937 28.3176 7.70526V7.7848C28.9937 7.88755 29.5174 8.15601 29.8886 8.5902C30.2631 9.02438 30.4487 9.56297 30.4454 10.206C30.4487 10.7661 30.293 11.2682 29.9781 11.7124C29.6665 12.1565 29.2406 12.5062 28.7004 12.7614C28.1601 13.0133 27.542 13.1392 26.846 13.1392Z"
-                                        fill="#F9FFFB" />
-                                </svg>
-                            </span>
-                            <span class="cart-text">
-                                {{ __('site_header.wishlist') }}
-                            </span>
-                        </a>
-                    </div>
+                    @endif
+                    @if (Route::has('website.wishlist.index'))
+                    @livewire('website.wishlist-header-icon')
+                    @endif
                     <div class="header-cart">
-                        <a href="cart.html" class="cart-item">
-                            <span>
-                                <svg width="35" height="28" viewBox="0 0 35 28" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M16.4444 21.897C14.8444 21.897 13.2441 21.8999 11.6441 21.8963C9.79233 21.892 8.65086 21.0273 8.12595 19.2489C7.04294 15.5794 5.95756 11.9107 4.87166 8.24203C4.6362 7.4468 4.37783 7.25412 3.55241 7.25175C2.7786 7.24964 2.00507 7.25754 1.23127 7.24911C0.512247 7.24148 0.0157813 6.79109 0.000242059 6.15064C-0.0160873 5.48281 0.475637 5.01689 1.23232 5.00873C2.11121 4.99952 2.99089 4.99214 3.86951 5.01268C5.36154 5.04769 6.52014 5.93215 6.96393 7.35415C7.14171 7.92378 7.34055 8.49026 7.46382 9.07201C7.54968 9.47713 7.77881 9.49661 8.10566 9.49582C11.8335 9.48897 15.5611 9.49134 19.2889 9.49134C21.0825 9.49134 22.8761 9.48108 24.6694 9.49503C26.0848 9.50608 27.0907 10.4906 27.0156 11.7778C27.0006 12.0363 26.925 12.2958 26.8473 12.5457C26.1317 14.8411 25.4124 17.1351 24.6879 19.4279C24.1851 21.0186 23.0223 21.8826 21.3504 21.8944C19.7151 21.906 18.0797 21.897 16.4444 21.897Z"
-                                        fill="#6E6D79" />
-                                    <path
-                                        d="M12.4012 27.5161C11.167 27.5227 10.1488 26.524 10.1345 25.2928C10.1201 24.0419 11.1528 22.9982 12.3967 23.0066C13.6209 23.0151 14.6422 24.0404 14.6436 25.2623C14.6451 26.4855 13.6261 27.5095 12.4012 27.5161Z"
-                                        fill="#6E6D79" />
-                                    <path
-                                        d="M22.509 25.2393C22.5193 26.4842 21.5393 27.4971 20.3064 27.5155C19.048 27.5342 18.0272 26.525 18.0277 25.2622C18.0279 24.0208 19.0214 23.0161 20.2572 23.0074C21.4877 22.9984 22.4988 24.0006 22.509 25.2393Z"
-                                        fill="#6E6D79" />
-                                    <circle cx="26.9523" cy="8" r="8" fill="#AE1C9A" />
-                                    <path
-                                        d="M23.7061 13V11.8864L27.1514 8.31676C27.5193 7.92898 27.8226 7.58925 28.0612 7.29759C28.3032 7.0026 28.4838 6.72254 28.6031 6.45739C28.7225 6.19223 28.7821 5.91051 28.7821 5.61222C28.7821 5.27415 28.7026 4.98248 28.5435 4.73722C28.3844 4.48864 28.1673 4.29806 27.8922 4.16548C27.6171 4.02959 27.3072 3.96165 26.9625 3.96165C26.5979 3.96165 26.2797 4.03622 26.008 4.18537C25.7362 4.33452 25.5274 4.54498 25.3815 4.81676C25.2357 5.08854 25.1628 5.40672 25.1628 5.77131H23.6962C23.6962 5.15151 23.8387 4.60961 24.1237 4.1456C24.4088 3.68158 24.7999 3.32197 25.297 3.06676C25.7942 2.80824 26.3593 2.67898 26.9923 2.67898C27.632 2.67898 28.1955 2.80658 28.6827 3.06179C29.1732 3.31368 29.556 3.65838 29.8311 4.09588C30.1062 4.53007 30.2438 5.0206 30.2438 5.56747C30.2438 5.94531 30.1725 6.31487 30.03 6.67614C29.8908 7.0374 29.6472 7.4401 29.2992 7.88423C28.9511 8.32505 28.4672 8.86032 27.8475 9.49006L25.824 11.608V11.6825H30.4078V13H23.7061Z"
-                                        fill="#F9FFFB" />
-                                </svg>
-                            </span>
-                            <span class="cart-text">
-                                {{ __('site_header.cart') }}
-                            </span>
-                        </a>
+                        @livewire('website.cart-header-icon')
+                        {{-- The old static cart submenu is disabled until it is connected to real cart data.
                         <div class="cart-submenu">
                             <div class="cart-wrapper-item">
                                 <div class="wrapper">
@@ -234,11 +211,14 @@
                                     <h5 class="wrapper-title">$60</h5>
                                 </div>
                                 <div class="cart-btn">
-                                    <a href="cart.html" class="shop-btn view-btn">{{ __('site_header.view_cart') }}</a>
-                                    <a href="checkout.html" class="shop-btn checkout-btn">{{ __('site_header.checkout_now') }}</a>
+                                    <a href="{{ route('website.cart.index') }}" class="shop-btn view-btn">{{ __('site_header.view_cart') }}</a>
+                                    @if (Route::has('website.checkout.index'))
+                                        <a href="{{ route('website.checkout.index') }}" class="shop-btn checkout-btn">{{ __('site_header.checkout_now') }}</a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
+                        --}}
                     </div>
                     <div class="header-user">
                         @auth
@@ -257,7 +237,7 @@
                                 </button>
                             </form>
                         @else
-                            <a href="user-profile.html">
+                            <a href="{{ route('website.login') }}">
                                 <span>
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                                         height="24" class="fill-current">
@@ -287,36 +267,18 @@
                     </svg>
                 </span>
             </button>
-            <a href="index-2.html" class="mobile-header-logo">
+            <a href="{{ route('website.home') }}" class="mobile-header-logo">
                 <img src="{{ asset('website-assets/assets/images/logos/logo.webp') }}" alt="logo">
             </a>
-            <a href="cart.html" class="header-cart cart-item">
-                <span>
-                    <svg width="35" height="28" viewBox="0 0 35 28" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M16.4444 21.897C14.8444 21.897 13.2441 21.8999 11.6441 21.8963C9.79233 21.892 8.65086 21.0273 8.12595 19.2489C7.04294 15.5794 5.95756 11.9107 4.87166 8.24203C4.6362 7.4468 4.37783 7.25412 3.55241 7.25175C2.7786 7.24964 2.00507 7.25754 1.23127 7.24911C0.512247 7.24148 0.0157813 6.79109 0.000242059 6.15064C-0.0160873 5.48281 0.475637 5.01689 1.23232 5.00873C2.11121 4.99952 2.99089 4.99214 3.86951 5.01268C5.36154 5.04769 6.52014 5.93215 6.96393 7.35415C7.14171 7.92378 7.34055 8.49026 7.46382 9.07201C7.54968 9.47713 7.77881 9.49661 8.10566 9.49582C11.8335 9.48897 15.5611 9.49134 19.2889 9.49134C21.0825 9.49134 22.8761 9.48108 24.6694 9.49503C26.0848 9.50608 27.0907 10.4906 27.0156 11.7778C27.0006 12.0363 26.925 12.2958 26.8473 12.5457C26.1317 14.8411 25.4124 17.1351 24.6879 19.4279C24.1851 21.0186 23.0223 21.8826 21.3504 21.8944C19.7151 21.906 18.0797 21.897 16.4444 21.897Z"
-                            fill="#6E6D79" />
-                        <path
-                            d="M12.4012 27.5161C11.167 27.5227 10.1488 26.524 10.1345 25.2928C10.1201 24.0419 11.1528 22.9982 12.3967 23.0066C13.6209 23.0151 14.6422 24.0404 14.6436 25.2623C14.6451 26.4855 13.6261 27.5095 12.4012 27.5161Z"
-                            fill="#6E6D79" />
-                        <path
-                            d="M22.509 25.2393C22.5193 26.4842 21.5393 27.4971 20.3064 27.5155C19.048 27.5342 18.0272 26.525 18.0277 25.2622C18.0279 24.0208 19.0214 23.0161 20.2572 23.0074C21.4877 22.9984 22.4988 24.0006 22.509 25.2393Z"
-                            fill="#6E6D79" />
-                        <circle cx="26.9523" cy="8" r="8" fill="#AE1C9A" />
-                        <path
-                            d="M23.7061 13V11.8864L27.1514 8.31676C27.5193 7.92898 27.8226 7.58925 28.0612 7.29759C28.3032 7.0026 28.4838 6.72254 28.6031 6.45739C28.7225 6.19223 28.7821 5.91051 28.7821 5.61222C28.7821 5.27415 28.7026 4.98248 28.5435 4.73722C28.3844 4.48864 28.1673 4.29806 27.8922 4.16548C27.6171 4.02959 27.3072 3.96165 26.9625 3.96165C26.5979 3.96165 26.2797 4.03622 26.008 4.18537C25.7362 4.33452 25.5274 4.54498 25.3815 4.81676C25.2357 5.08854 25.1628 5.40672 25.1628 5.77131H23.6962C23.6962 5.15151 23.8387 4.60961 24.1237 4.1456C24.4088 3.68158 24.7999 3.32197 25.297 3.06676C25.7942 2.80824 26.3593 2.67898 26.9923 2.67898C27.632 2.67898 28.1955 2.80658 28.6827 3.06179C29.1732 3.31368 29.556 3.65838 29.8311 4.09588C30.1062 4.53007 30.2438 5.0206 30.2438 5.56747C30.2438 5.94531 30.1725 6.31487 30.03 6.67614C29.8908 7.0374 29.6472 7.4401 29.2992 7.88423C28.9511 8.32505 28.4672 8.86032 27.8475 9.49006L25.824 11.608V11.6825H30.4078V13H23.7061Z"
-                            fill="#F9FFFB" />
-                    </svg>
-                </span>
-            </a>
+            @livewire('website.cart-header-icon')
         </div>
         <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions">
             <div class="offcanvas-body">
                 <div class="header-top">
                     <div class="header-cart ">
+                        @if (Route::has('website.compare.index'))
                         <div class="header-compaire">
-                            <a href="compaire.html" class="cart-item">
+                            <a href="{{ route('website.compare.index') }}" class="cart-item">
                                 <span>
                                     <svg width="34" height="27" viewBox="0 0 34 27" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
@@ -337,22 +299,10 @@
                                 </span>
                             </a>
                         </div>
-                        <div class="header-favourite">
-                            <a href="wishlist.html" class="cart-item">
-                                <span>
-                                    <svg width="35" height="27" viewBox="0 0 35 27" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M11.4047 8.54989C11.6187 8.30247 11.8069 8.07783 12.0027 7.86001C15.0697 4.45162 20.3879 5.51717 22.1581 9.60443C23.4189 12.5161 22.8485 15.213 20.9965 17.6962C19.6524 19.498 17.95 20.9437 16.2722 22.4108C15.0307 23.4964 13.774 24.5642 12.5246 25.6408C11.6986 26.3523 11.1108 26.3607 10.2924 25.6397C8.05177 23.6657 5.79225 21.7125 3.59029 19.6964C2.35865 18.5686 1.33266 17.2553 0.638823 15.7086C-0.626904 12.8872 0.0324709 9.41204 2.22306 7.41034C4.84011 5.01855 8.81757 5.36918 11.1059 8.19281C11.1968 8.30475 11.2907 8.41404 11.4047 8.54989Z"
-                                            fill="#6E6D79" />
-                                        <circle cx="26.7662" cy="8" r="8" fill="#AE1C9A" />
-                                        <path
-                                            d="M26.846 13.1392C26.1632 13.1392 25.5534 13.0215 25.0164 12.7862C24.4828 12.5509 24.0602 12.2244 23.7487 11.8068C23.4404 11.3859 23.2747 10.8987 23.2515 10.3452H24.8126C24.8325 10.6468 24.9336 10.9086 25.1159 11.1307C25.3015 11.3494 25.5434 11.5185 25.8417 11.6378C26.14 11.7571 26.4715 11.8168 26.836 11.8168C27.2371 11.8168 27.5917 11.7472 27.9 11.608C28.2115 11.4687 28.4551 11.2749 28.6308 11.0263C28.8065 10.7744 28.8943 10.4844 28.8943 10.1562C28.8943 9.81487 28.8065 9.51491 28.6308 9.25639C28.4584 8.99455 28.2049 8.78906 27.8701 8.63991C27.5387 8.49077 27.1377 8.41619 26.667 8.41619H25.8069V7.16335H26.667C27.0448 7.16335 27.3763 7.09541 27.6613 6.95952C27.9497 6.82363 28.1751 6.63471 28.3375 6.39276C28.4999 6.14749 28.5811 5.8608 28.5811 5.53267C28.5811 5.2178 28.5098 4.94437 28.3673 4.71236C28.2281 4.47704 28.0292 4.29309 27.7707 4.16051C27.5155 4.02794 27.2139 3.96165 26.8659 3.96165C26.5344 3.96165 26.2245 4.02296 25.9362 4.1456C25.6511 4.26491 25.4191 4.43726 25.2402 4.66264C25.0612 4.88471 24.9651 5.15151 24.9518 5.46307H23.4653C23.4819 4.91288 23.6443 4.42898 23.9525 4.01136C24.2641 3.59375 24.6751 3.26728 25.1855 3.03196C25.6959 2.79664 26.2627 2.67898 26.8858 2.67898C27.5387 2.67898 28.1021 2.80658 28.5761 3.06179C29.0534 3.31368 29.4213 3.65009 29.6798 4.07102C29.9416 4.49195 30.0709 4.95265 30.0676 5.45312C30.0709 6.0232 29.9118 6.5071 29.5903 6.90483C29.2721 7.30256 28.8479 7.56937 28.3176 7.70526V7.7848C28.9937 7.88755 29.5174 8.15601 29.8886 8.5902C30.2631 9.02438 30.4487 9.56297 30.4454 10.206C30.4487 10.7661 30.293 11.2682 29.9781 11.7124C29.6665 12.1565 29.2406 12.5062 28.7004 12.7614C28.1601 13.0133 27.542 13.1392 26.846 13.1392Z"
-                                            fill="#F9FFFB" />
-                                    </svg>
-                                </span>
-                            </a>
-                        </div>
+                        @endif
+                        @if (Route::has('website.wishlist.index'))
+                        @livewire('website.wishlist-header-icon')
+                        @endif
                     </div>
                     <div class="shop-btn">
                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
@@ -361,7 +311,7 @@
                     <div class="header-profile">
                         @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
                             <a href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
-                                <span>{{ $localeCode === 'ar' ? '🇪🇬' : '🇺🇸' }}</span>
+                                <span>{{ strtoupper($localeCode) }}</span>
                             </a>
                         @endforeach
                     </div>
@@ -385,11 +335,15 @@
                             {{ __('site_header.logout') }}
                         </button>
                     </form>
+                @else
+                    <a href="{{ route('website.login') }}" class="shop-btn" style="display: block; margin-bottom: 15px; text-align: center;">
+                        {{ __('site_header.account') }}
+                    </a>
                 @endauth
                 <div class="category-dropdown">
                     <ul class="category-list">
                         <li class="category-list-item">
-                            <a href="product-sidebar.html">
+                            <a href="{{ route('website.categories.index') }}">
                                 <div class="dropdown-item d-flex justify-content-between align-items-center">
                                     <div class="dropdown-list-item d-flex">
                                         <span class="dropdown-img">
@@ -415,7 +369,7 @@
                             </a>
                         </li>
                         <li class="category-list-item">
-                            <a href="product-sidebar.html">
+                            <a href="{{ route('website.categories.index') }}">
                                 <div class="dropdown-item d-flex justify-content-between align-items-center">
                                     <div class="dropdown-list-item d-flex">
                                         <span class="dropdown-img">
@@ -441,7 +395,7 @@
                             </a>
                         </li>
                         <li class="category-list-item">
-                            <a href="product-sidebar.html">
+                            <a href="{{ route('website.categories.index') }}">
                                 <div class="dropdown-item d-flex justify-content-between align-items-center">
                                     <div class="dropdown-list-item d-flex">
                                         <span class="dropdown-img">
@@ -467,7 +421,7 @@
                             </a>
                         </li>
                         <li class="category-list-item">
-                            <a href="product-sidebar.html">
+                            <a href="{{ route('website.categories.index') }}">
                                 <div class="dropdown-item d-flex justify-content-between align-items-center">
                                     <div class="dropdown-list-item d-flex">
                                         <span class="dropdown-img">
@@ -493,7 +447,7 @@
                             </a>
                         </li>
                         <li class="category-list-item">
-                            <a href="product-sidebar.html">
+                            <a href="{{ route('website.categories.index') }}">
                                 <div class="dropdown-item d-flex justify-content-between align-items-center">
                                     <div class="dropdown-list-item d-flex">
                                         <span class="dropdown-img">
@@ -519,7 +473,7 @@
                             </a>
                         </li>
                         <li class="category-list-item">
-                            <a href="product-sidebar.html">
+                            <a href="{{ route('website.categories.index') }}">
                                 <div class="dropdown-item d-flex justify-content-between align-items-center">
                                     <div class="dropdown-list-item d-flex">
                                         <span class="dropdown-img">
@@ -545,7 +499,7 @@
                             </a>
                         </li>
                         <li class="category-list-item">
-                            <a href="product-sidebar.html">
+                            <a href="{{ route('website.categories.index') }}">
                                 <div class="dropdown-item d-flex justify-content-between align-items-center">
                                     <div class="dropdown-list-item d-flex">
                                         <span class="dropdown-img">
@@ -571,7 +525,7 @@
                             </a>
                         </li>
                         <li class="category-list-item">
-                            <a href="product-sidebar.html">
+                            <a href="{{ route('website.categories.index') }}">
                                 <div class="dropdown-item d-flex justify-content-between align-items-center">
                                     <div class="dropdown-list-item d-flex">
                                         <span class="dropdown-img">
@@ -597,7 +551,7 @@
                             </a>
                         </li>
                         <li class="category-list-item">
-                            <a href="product-sidebar.html">
+                            <a href="{{ route('website.categories.index') }}">
                                 <div class="dropdown-item d-flex justify-content-between align-items-center">
                                     <div class="dropdown-list-item d-flex">
                                         <span class="dropdown-img">
@@ -623,7 +577,7 @@
                             </a>
                         </li>
                         <li class="category-list-item">
-                            <a href="product-sidebar.html">
+                            <a href="{{ route('website.categories.index') }}">
                                 <div class="dropdown-item d-flex justify-content-between align-items-center">
                                     <div class="dropdown-list-item d-flex">
                                         <span class="dropdown-img">
@@ -649,7 +603,7 @@
                             </a>
                         </li>
                         <li class="category-list-item">
-                            <a href="product-sidebar.html">
+                            <a href="{{ route('website.categories.index') }}">
                                 <div class="dropdown-item d-flex justify-content-between align-items-center">
                                     <div class="dropdown-list-item d-flex">
                                         <span class="dropdown-img">
@@ -700,7 +654,7 @@
                     <div class="category-dropdown position-absolute" id="subMenu">
                         <ul class="category-list">
                             <li class="category-list-item">
-                                <a href="product-sidebar.html">
+                                <a href="{{ route('website.categories.index') }}">
                                     <div class="dropdown-item">
                                         <div class="dropdown-list-item">
                                             <span class="dropdown-img">
@@ -726,7 +680,7 @@
                                 </a>
                             </li>
                             <li class="category-list-item">
-                                <a href="product-sidebar.html">
+                                <a href="{{ route('website.categories.index') }}">
                                     <div class="dropdown-item d-flex justify-content-between align-items-center">
                                         <div class="dropdown-list-item d-flex">
                                             <span class="dropdown-img">
@@ -752,7 +706,7 @@
                                 </a>
                             </li>
                             <li class="category-list-item">
-                                <a href="product-sidebar.html">
+                                <a href="{{ route('website.categories.index') }}">
                                     <div class="dropdown-item d-flex justify-content-between align-items-center">
                                         <div class="dropdown-list-item d-flex">
                                             <span class="dropdown-img">
@@ -778,7 +732,7 @@
                                 </a>
                             </li>
                             <li class="category-list-item">
-                                <a href="product-sidebar.html">
+                                <a href="{{ route('website.categories.index') }}">
                                     <div class="dropdown-item d-flex justify-content-between align-items-center">
                                         <div class="dropdown-list-item d-flex">
                                             <span class="dropdown-img">
@@ -804,7 +758,7 @@
                                 </a>
                             </li>
                             <li class="category-list-item">
-                                <a href="product-sidebar.html">
+                                <a href="{{ route('website.categories.index') }}">
                                     <div class="dropdown-item d-flex justify-content-between align-items-center">
                                         <div class="dropdown-list-item d-flex">
                                             <span class="dropdown-img">
@@ -830,7 +784,7 @@
                                 </a>
                             </li>
                             <li class="category-list-item">
-                                <a href="product-sidebar.html">
+                                <a href="{{ route('website.categories.index') }}">
                                     <div class="dropdown-item d-flex justify-content-between align-items-center">
                                         <div class="dropdown-list-item d-flex">
                                             <span class="dropdown-img">
@@ -856,7 +810,7 @@
                                 </a>
                             </li>
                             <li class="category-list-item">
-                                <a href="product-sidebar.html">
+                                <a href="{{ route('website.categories.index') }}">
                                     <div class="dropdown-item d-flex justify-content-between align-items-center">
                                         <div class="dropdown-list-item d-flex">
                                             <span class="dropdown-img">
@@ -882,7 +836,7 @@
                                 </a>
                             </li>
                             <li class="category-list-item">
-                                <a href="product-sidebar.html">
+                                <a href="{{ route('website.categories.index') }}">
                                     <div class="dropdown-item d-flex justify-content-between align-items-center">
                                         <div class="dropdown-list-item d-flex">
                                             <span class="dropdown-img">
@@ -908,7 +862,7 @@
                                 </a>
                             </li>
                             <li class="category-list-item">
-                                <a href="product-sidebar.html">
+                                <a href="{{ route('website.categories.index') }}">
                                     <div class="dropdown-item d-flex justify-content-between align-items-center">
                                         <div class="dropdown-list-item d-flex">
                                             <span class="dropdown-img">
@@ -934,7 +888,7 @@
                                 </a>
                             </li>
                             <li class="category-list-item">
-                                <a href="product-sidebar.html">
+                                <a href="{{ route('website.categories.index') }}">
                                     <div class="dropdown-item d-flex justify-content-between align-items-center">
                                         <div class="dropdown-list-item d-flex">
                                             <span class="dropdown-img">
@@ -960,7 +914,7 @@
                                 </a>
                             </li>
                             <li class="category-list-item">
-                                <a href="product-sidebar.html">
+                                <a href="{{ route('website.categories.index') }}">
                                     <div class="dropdown-item d-flex justify-content-between align-items-center">
                                         <div class="dropdown-list-item d-flex">
                                             <span class="dropdown-img">
@@ -991,12 +945,12 @@
                 <div class="header-nav-menu">
                     <ul class="menu-list">
                         <li>
-                            <a href="index-2.html">
+                            <a href="{{ route('website.home') }}">
                                 <span class="list-text">{{ __('site_header.home') }}</span>
                             </a>
                         </li>
                         <li class="mega-menu">
-                            <a href="product-sidebar.html">
+                            <a href="{{ route('website.categories.index') }}">
                                 <span class="list-text">{{ __('site_header.shop') }}</span>
                                 <span>
                                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none"
@@ -1019,25 +973,25 @@
                                     <div class="menu-list">
                                         <h5 class="menu-title">{{ __('site_header.dresses') }}</h5>
                                         <ul>
-                                            <li><a href="product-sidebar.html">{{ __('site_header.shirt') }}</a></li>
-                                            <li><a href="product-sidebar.html">{{ __('site_header.skart') }}</a></li>
-                                            <li><a href="product-sidebar.html"> {{ __('site_header.t_shirt') }}</a></li>
+                                            <li><a href="{{ route('website.categories.index') }}">{{ __('site_header.shirt') }}</a></li>
+                                            <li><a href="{{ route('website.categories.index') }}">{{ __('site_header.skart') }}</a></li>
+                                            <li><a href="{{ route('website.categories.index') }}"> {{ __('site_header.t_shirt') }}</a></li>
                                         </ul>
                                     </div>
                                     <div class="menu-list">
                                         <h5 class="menu-title">{{ __('site_header.bags') }}</h5>
                                         <ul>
-                                            <li><a href="product-sidebar.html">{{ __('site_header.handbags') }}</a></li>
-                                            <li><a href="product-sidebar.html">{{ __('site_header.mobile_bags') }}</a></li>
-                                            <li><a href="product-sidebar.html">{{ __('site_header.school_bags') }}</a></li>
+                                            <li><a href="{{ route('website.categories.index') }}">{{ __('site_header.handbags') }}</a></li>
+                                            <li><a href="{{ route('website.categories.index') }}">{{ __('site_header.mobile_bags') }}</a></li>
+                                            <li><a href="{{ route('website.categories.index') }}">{{ __('site_header.school_bags') }}</a></li>
                                         </ul>
                                     </div>
                                     <div class="menu-list">
                                         <h5 class="menu-title">{{ __('site_header.cosmetics') }}</h5>
                                         <ul>
-                                            <li><a href="product-sidebar.html">{{ __('site_header.liptics') }}</a></li>
-                                            <li><a href="product-sidebar.html">{{ __('site_header.foundation') }}</a></li>
-                                            <li><a href="product-sidebar.html"> {{ __('site_header.eye_liner') }}</a></li>
+                                            <li><a href="{{ route('website.categories.index') }}">{{ __('site_header.liptics') }}</a></li>
+                                            <li><a href="{{ route('website.categories.index') }}">{{ __('site_header.foundation') }}</a></li>
+                                            <li><a href="{{ route('website.categories.index') }}"> {{ __('site_header.eye_liner') }}</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -1081,33 +1035,39 @@
                                 <span class="list-text">{{ __('site_header.faq') }}</span>
                             </a>
                         </li>
+                        @if (Route::has('website.about'))
                         <li>
-                            <a href="about.html">
+                            <a href="{{ route('website.about') }}">
                                 <span class="list-text">{{ __('site_header.about') }}</span>
                             </a>
                         </li>
+                        @endif
+                        @if (Route::has('website.blogs.index'))
                         <li>
-                            <a href="blogs.html">
+                            <a href="{{ route('website.blogs.index') }}">
                                 <span class="list-text">{{ __('site_header.blog') }}</span>
                             </a>
-                            <ul class="header-sub-menu">
-                                <li><a href="blogs-details.html">{{ __('site_header.blog_details') }}</a></li>
-                            </ul>
                         </li>
+                        @endif
+                        @if (Route::has('website.profile'))
                         <li>
-                            <a href="user-profile.html">
+                            <a href="{{ route('website.profile') }}">
                                 <span class="list-text">{{ __('site_header.user_dashboard') }}</span>
                             </a>
                         </li>
+                        @endif
+                        @if (Route::has('website.contact'))
                         <li>
-                            <a href="contact-us.html">
+                            <a href="{{ route('website.contact') }}">
                                 <span class="list-text">{{ __('site_header.contact') }}</span>
                             </a>
                         </li>
+                        @endif
                     </ul>
                 </div>
+                @if (Route::has('website.vendors.create'))
                 <div class="header-vendor-btn">
-                    <a href="become-vendor.html" class="shop-btn">
+                    <a href="{{ route('website.vendors.create') }}" class="shop-btn">
                         <span class="list-text shop-text">{{ __('site_header.become_vendor') }}</span>
                         <span class="icon">
                             <svg width="24" height="16" viewBox="0 0 24 16" fill="none"
@@ -1118,6 +1078,7 @@
                         </span>
                     </a>
                 </div>
+                @endif
             </div>
         </div>
     </div>
