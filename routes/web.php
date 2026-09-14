@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\website\BrandController;
 use App\Http\Controllers\website\CartController;
 use App\Http\Controllers\website\CategoryController;
+use App\Http\Controllers\website\CheckoutController;
 use App\Http\Controllers\website\HomeController;
 use App\Http\Controllers\website\ProductController;
 use App\Http\Controllers\website\WishlistController;
@@ -85,6 +86,9 @@ Route::group(
         Route::middleware('auth:web')->group(function () {
             Route::get('/cart', [CartController::class, 'index'])
                 ->name('cart.index');
+
+            Route::get('/checkout', [CheckoutController::class, 'index'])
+                ->name('checkout.index');
 
             Route::get('/wishlist', [WishlistController::class, 'index'])
                 ->name('wishlist.index');
