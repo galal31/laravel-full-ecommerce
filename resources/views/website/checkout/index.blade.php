@@ -230,6 +230,143 @@
                 padding: 0.4rem 0.8rem;
             }
 
+            .checkout-coupon {
+                background: #fffafe;
+                border: 1px dashed #dcbfd6;
+                border-radius: 1rem;
+                margin-top: 2rem;
+                padding: 1.6rem;
+            }
+
+            .checkout-coupon-heading {
+                align-items: flex-start;
+                display: flex;
+                gap: 1.2rem;
+                justify-content: space-between;
+                margin-bottom: 1.3rem;
+            }
+
+            .checkout-coupon-heading h3 {
+                color: #232532;
+                font-size: 1.45rem;
+                font-weight: 800;
+                margin: 0 0 0.35rem;
+            }
+
+            .checkout-coupon-heading p {
+                color: #797979;
+                font-size: 1.15rem;
+                line-height: 1.6;
+                margin: 0;
+            }
+
+            .checkout-coupon-mark {
+                align-items: center;
+                background: #ae1c9a;
+                border-radius: 50%;
+                color: #fff;
+                display: inline-flex;
+                flex: 0 0 3.2rem;
+                font-size: 1.35rem;
+                font-weight: 800;
+                height: 3.2rem;
+                justify-content: center;
+            }
+
+            .checkout-coupon-form {
+                display: grid;
+                gap: 0.8rem;
+                grid-template-columns: minmax(0, 1fr) auto;
+            }
+
+            .checkout-coupon-input {
+                position: relative;
+            }
+
+            .checkout-coupon-form .form-control {
+                border: 1px solid #e4d8e1;
+                border-radius: 0.8rem;
+                color: #232532;
+                font-size: 1.3rem;
+                min-height: 4.4rem;
+                padding: 0.9rem 1.1rem;
+                padding-inline-end: 4rem;
+            }
+
+            .checkout-coupon-form .form-control:focus {
+                border-color: #ae1c9a;
+                box-shadow: 0 0 0 0.3rem rgba(174, 28, 154, 0.1);
+                outline: none;
+            }
+
+            .checkout-coupon-remove {
+                align-items: center;
+                background: #fff0f0;
+                border: 0;
+                border-radius: 50%;
+                color: #c62828;
+                cursor: pointer;
+                display: inline-flex;
+                font-size: 2rem;
+                font-weight: 700;
+                height: 2.8rem;
+                inset-inline-end: 0.8rem;
+                justify-content: center;
+                line-height: 1;
+                padding: 0;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 2.8rem;
+            }
+
+            .checkout-coupon-remove:hover,
+            .checkout-coupon-remove:focus-visible {
+                background: #c62828;
+                color: #fff;
+                outline: none;
+            }
+
+            .checkout-coupon-button {
+                background: #ae1c9a;
+                border: 1px solid #ae1c9a;
+                border-radius: 0.8rem;
+                color: #fff;
+                cursor: pointer;
+                font-size: 1.25rem;
+                font-weight: 700;
+                min-height: 4.4rem;
+                padding: 0.9rem 1.5rem;
+            }
+
+            .checkout-coupon-message {
+                border-radius: 0.7rem;
+                font-size: 1.15rem;
+                margin: 0 0 1rem;
+                padding: 0.8rem 1rem;
+            }
+
+            .checkout-coupon-message.is-success {
+                background: #eaf8ef;
+                color: #238636;
+            }
+
+            .checkout-coupon-message.is-error {
+                background: #fff0f0;
+                color: #c62828;
+            }
+
+            .checkout-coupon-applied {
+                margin-top: 1.1rem;
+            }
+
+            .checkout-coupon-applied p {
+                color: #238636;
+                font-size: 1.15rem;
+                font-weight: 700;
+                margin: 0;
+            }
+
             .checkout-summary-totals {
                 display: grid;
                 gap: 1.2rem;
@@ -253,6 +390,10 @@
                 font-size: 1.4rem;
             }
 
+            .checkout-summary-total-row.is-coupon strong {
+                color: #238636;
+            }
+
             .checkout-summary-total-row.is-total {
                 border-top: 1px solid #f0e5ed;
                 margin-top: 0.4rem;
@@ -261,6 +402,36 @@
 
             .checkout-summary-total-row.is-total strong {
                 font-size: 1.8rem;
+            }
+
+            .checkout-place-order-button {
+                align-items: center;
+                background: #ae1c9a;
+                border: 1px solid #ae1c9a;
+                border-radius: 0.9rem;
+                color: #fff;
+                cursor: pointer;
+                display: flex;
+                font-size: 1.4rem;
+                font-weight: 800;
+                justify-content: center;
+                margin-top: 2rem;
+                min-height: 5rem;
+                padding: 1rem 1.5rem;
+                transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+                width: 100%;
+            }
+
+            .checkout-place-order-button:hover,
+            .checkout-place-order-button:focus-visible {
+                background: #8f177f;
+                border-color: #8f177f;
+                color: #fff;
+                outline: none;
+            }
+
+            .checkout-place-order-button:active {
+                transform: translateY(1px);
             }
 
             @media (max-width: 991px) {
@@ -298,12 +469,18 @@
                     margin-bottom: 1.6rem;
                     padding-inline: 0;
                 }
+
+                .checkout-coupon-form {
+                    grid-template-columns: 1fr;
+                }
             }
 
             @media (prefers-reduced-motion: reduce) {
                 .checkout-field .form-control,
-                .checkout-billing-card .form-control {
+                .checkout-billing-card .form-control,
+                .checkout-place-order-button {
                     scroll-behavior: auto;
+                    transition: none;
                 }
             }
         </style>
@@ -317,10 +494,7 @@
 
         <section class="checkout-page-content">
             <div class="container">
-                <div class="checkout-layout">
-                    @livewire('website.checkout.billing-details')
-                    @livewire('website.checkout.order-summary', ['cartItems' => $cartItems])
-                </div>
+                @livewire('website.checkout.checkout-form', ['cartItems' => $cartItems])
             </div>
         </section>
     </div>

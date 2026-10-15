@@ -45,9 +45,7 @@ new class extends Component
         $this->galleryImages = array_values(array_unique($this->galleryImages));
 
         if (empty($this->galleryImages)) {
-            $this->galleryImages[] = asset(
-                'website-assets/assets/images/homepage-one/product-img/product-img-1.webp'
-            );
+            $this->galleryImages[] = asset('website-assets/assets/images/homepage-one/product-img/product-img-1.webp');
         }
 
         $this->displayedImage = $this->galleryImages[0];
@@ -58,8 +56,7 @@ new class extends Component
     public function variantOptions()
     {
         return $this->product->variants->mapWithKeys(function ($variant) {
-            $variantImage = $variant->images->first()?->image_url
-                ?? $this->galleryImages[0]
+            $variantImage = $variant->images->first()?->image_url ?? $this->galleryImages[0]
                 ?? asset('website-assets/assets/images/homepage-one/product-img/product-img-1.webp');
 
             return [
@@ -115,31 +112,20 @@ new class extends Component
             return;
         }
 
-        $this->is_wishlisted = $wishlistService->toggle(
-            (int) auth()->id(),
-            (int) $this->product->id
-        );
+        $this->is_wishlisted = $wishlistService->toggle((int) auth()->id(), (int) $this->product->id);
 
-        $this->dispatch(
-            $this->is_wishlisted ? 'wishlist_item_added' : 'wishlist_item_removed'
-        );
+        $this->dispatch($this->is_wishlisted ? 'wishlist_item_added' : 'wishlist_item_removed');
     }
 
     public function addToCart(CartService $cartService): void
     {
         if (! auth()->check()) {
             session()->flash('cart_error', __('website.login_to_add_to_cart'));
-
             return;
         }
 
         try {
-            $result = $cartService->add(
-                (int) auth()->id(),
-                (int) $this->product->id,
-                $this->selectedVariantId,
-                $this->quantity
-            );
+            $result = $cartService->add((int) auth()->id(), (int) $this->product->id, $this->selectedVariantId, $this->quantity);
 
             if ($result['created']) {
                 $this->dispatch('cart_item_added');

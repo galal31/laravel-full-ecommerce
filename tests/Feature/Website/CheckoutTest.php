@@ -66,13 +66,38 @@ class CheckoutTest extends TestCase
             ->assertDispatched('shipping_price_updated', shippingPrice: 45.50);
     }
 
-    public function test_order_summary_receives_the_live_shipping_price(): void
+    public function test_checkout_form_calculates_shipping_from_selected_governorate(): void
     {
         $user = User::factory()->create();
+        $countryId = DB::table('countries')->insertGetId([
+            'name' => json_encode(['en' => 'Egypt', 'ar' => 'مصر']),
+            'phone_code' => '+20',
+            'status' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        $governorateId = DB::table('governorates')->insertGetId([
+            'country_id' => $countryId,
+            'name' => json_encode(['en' => 'Cairo', 'ar' => 'القاهرة']),
+            'status' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('shipping_governorates')->insert([
+            'governorate_id' => $governorateId,
+            'price' => 35,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         Livewire::actingAs($user)
-            ->test('website.checkout.order-summary', ['cartItems' => collect()])
-            ->dispatch('shipping_price_updated', shippingPrice: 35)
-            ->assertSet('shippingPrice', 35.0);
+            ->test('website.checkout.checkout-form', ['cartItems' => collect()])
+            ->set('country_id', $countryId)
+            ->set('governorate_id', $governorateId)
+            ->assertSet('shippingPrice', 35.0)
+            ->set('country_id', null)
+            ->assertSet('governorate_id', null)
+            ->assertSet('city_id', null)
+            ->assertSet('shippingPrice', 0.0);
     }
 }

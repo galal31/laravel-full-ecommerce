@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Models\Dashboard\City;
 use App\Models\Dashboard\Wishlist;
 use App\Models\dashboard\Contact;
+use App\Models\Dashboard\Order;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -66,4 +67,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(Cart::class);
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
 }

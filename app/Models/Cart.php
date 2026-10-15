@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Dashboard\Coupon;
 use Illuminate\Database\Eloquent\Model;
 
 class Cart extends Model
 {
-    protected $fillable = ['user_id'];
+    protected $fillable = ['user_id', 'coupon_id'];
 
     public function user()
     {
@@ -17,4 +18,12 @@ class Cart extends Model
     {
         return $this->hasMany(CartItem::class);
     }
+
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class);
+    }
+
+    
+    
 }
