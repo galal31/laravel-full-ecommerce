@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrapFive();
 
-        View::composer('layouts.website.user.header', function ($view) {
+        View::composer(['layouts.website.user.header', 'website.home-parts.footer'], function ($view) {
             $pages = Page::query()
                 ->select(['title', 'slug'])
                 ->orderBy('title')
