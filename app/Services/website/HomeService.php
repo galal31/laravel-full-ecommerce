@@ -11,13 +11,17 @@ class HomeService
         private HomeRepository $homeRepository
     ) {}
 
-    public function getHomeData(): array
+    public function getHomeData(string $searchQuery = ''): array
     {
         $userId = auth()->id();
         $discountEndingTodayProducts = $this->homeRepository
             ->getDiscountEndingTodayProducts(8, $userId);
 
         return [
+            'searchQuery' => $searchQuery,
+            'searchProducts' => $searchQuery !== ''
+                ? $this->homeRepository->searchProducts($searchQuery, $userId)
+                : collect(),
             'sliders' => Cache::rememberForever(
                 'sliders',
                 fn () => $this->homeRepository->getSliders()

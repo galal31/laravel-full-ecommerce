@@ -59,6 +59,22 @@ class HomeRepository
             ->get();
     }
 
+    public function searchProducts(string $searchQuery, ?int $userId = null): Collection
+    {
+        // البحث في الاسم باللغتين مع الاحتفاظ بنفس بيانات السعر والمخزون والمفضلة.
+        return Product::query()
+            ->with(['brand:id,name', 'category:id,name'])
+            ->withStorefrontData()
+            ->withWishlistStatus($userId)
+            ->where(function ($query) use ($searchQuery) {
+                $query->where('name->ar', 'like', '%'.$searchQuery.'%')
+                    ->orWhere('name->en', 'like', '%'.$searchQuery.'%');
+            })
+            ->latest()
+            ->limit(24)
+            ->get();
+    }
+
     // get products that discount ends today
     public function getDiscountEndingTodayProducts(int $limit = 8, ?int $userId = null): Collection
     {
