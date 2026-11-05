@@ -100,12 +100,19 @@ class MyFatoorahService
     public function getInvoicePaymentResult(array $invoiceStatus): array
     {
         $unknown = ['status' => 'unknown', 'payment_id' => null];
-        $data = $invoiceStatus['Data'] ?? null;
 
-        if (($invoiceStatus['IsSuccess'] ?? null) !== true || ! is_array($data)
-            || ! in_array($data['InvoiceStatus'] ?? null, ['Pending', 'Paid', 'Canceled'], true)
-            || ! is_array($data['InvoiceTransactions'] ?? null)
-            || ! array_is_list($data['InvoiceTransactions'])) {
+        // 1. فحص مبدئي لنجاح الرد ووجود الداتا
+        if (($invoiceStatus['IsSuccess'] ?? false) !== true || ! is_array($invoiceStatus['Data'] ?? null)) {
+            return $unknown;
+        }
+
+        $data = $invoiceStatus['Data'];
+        $status = $data['InvoiceStatus'] ?? null;
+        $transactions = $data['InvoiceTransactions'] ?? null;
+
+        // 2. فحص صحة المتغيرات الأساسية (Guard Clauses)
+        $validStatuses = ['Pending', 'Paid', 'Canceled'];
+        if (! in_array($status, $validStatuses, true) || ! is_array($transactions) || ! array_is_list($transactions)) {
             return $unknown;
         }
 
@@ -114,41 +121,45 @@ class MyFatoorahService
         $hasProcessingAttempt = false;
         $hasUnknownAttempt = false;
 
-        // نفحص كل المحاولات؛ فشل محاولة قد يتبعه نجاح محاولة أخرى.
-        foreach ($data['InvoiceTransactions'] as $transaction) {
+        // 3. تحليل العمليات
+        foreach ($transactions as $transaction) {
             if (! is_array($transaction)) {
                 $hasUnknownAttempt = true;
+
                 continue;
             }
 
-            $status = $transaction['TransactionStatus'] ?? null;
-            if ($status === 'Succss') {
-                // هذا هو اسم حالة النجاح كما ترسله واجهة MyFatoorah v2.
+            $txnStatus = $transaction['TransactionStatus'] ?? null;
+
+            if ($txnStatus === 'Succss') { // خطأ إملائي من بوابة ماي فاتورة
                 $hasSuccessfulAttempt = true;
                 $paymentId = $transaction['PaymentId'] ?? null;
-                if (is_string($paymentId) && ctype_digit($paymentId)) {
-                    $successfulPaymentId ??= $paymentId;
+
+                // تعديل هنا ليقبل الأرقام سواء كانت String أو Integer
+                if ((is_int($paymentId) || is_string($paymentId)) && ctype_digit((string) $paymentId)) {
+                    $successfulPaymentId ??= (string) $paymentId;
                 }
-            } elseif (in_array($status, ['InProgress', 'Authorize'], true)) {
+            } elseif (in_array($txnStatus, ['InProgress', 'Authorize'], true)) {
                 $hasProcessingAttempt = true;
-            } elseif (! in_array($status, ['Failed', 'Canceled'], true)) {
+            } elseif (! in_array($txnStatus, ['Failed', 'Canceled'], true)) {
                 $hasUnknownAttempt = true;
             }
         }
 
+        // 4. تحديد النتيجة النهائية بناءً على البيانات المُجمعة
         if ($hasSuccessfulAttempt) {
-            // نعيد رقم محاولة النجاح للتحقق من مبلغها وعملتها عبر الاستعلام الحالي v3.
-            return $data['InvoiceStatus'] === 'Paid' && $successfulPaymentId !== null
+            return ($status === 'Paid' && $successfulPaymentId !== null)
                 ? ['status' => 'paid', 'payment_id' => $successfulPaymentId]
                 : $unknown;
         }
 
-        if ($data['InvoiceStatus'] === 'Paid') {
+        // إذا كانت حالة الفاتورة Paid ولكن لم نجد أي عملية ناجحة في اللوب!
+        if ($status === 'Paid') {
             return $unknown;
         }
 
         if ($hasProcessingAttempt) {
-            return $data['InvoiceStatus'] === 'Pending'
+            return $status === 'Pending'
                 ? ['status' => 'processing', 'payment_id' => null]
                 : $unknown;
         }
@@ -157,7 +168,7 @@ class MyFatoorahService
             return $unknown;
         }
 
-        // غير مدفوع في هذا الرد؛ تحرير الحجز يحتاج فحص انتهاء مهلة الدفع أيضًا.
+        // لم ينجح، ولم يكن قيد المعالجة، ولم تحدث حالة غير معروفة
         return ['status' => 'unpaid', 'payment_id' => null];
     }
 
@@ -185,14 +196,15 @@ class MyFatoorahService
                && ($paymentStatus['Data']['Transaction']['Status'] ?? null) === 'SUCCESS'
                && isset($paymentStatus['Data']['Invoice']['Id']) && is_scalar($paymentStatus['Data']['Invoice']['Id'])
                && isset($paymentStatus['Data']['Transaction']['Id']) && is_scalar($paymentStatus['Data']['Transaction']['Id'])) {
-                
-            return [    
+
+            return [
                 'invoice_id' => (string) $paymentStatus['Data']['Invoice']['Id'],
                 'transaction_id' => (string) $paymentStatus['Data']['Transaction']['Id'],
                 'amount' => $paymentStatus['Data']['Amount']['ValueInDisplayCurrency'] ?? null,
                 'currency' => $paymentStatus['Data']['Amount']['DisplayCurrency'] ?? null,
             ];
         }
+
         return false;
     }
 

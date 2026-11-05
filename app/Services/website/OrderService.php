@@ -130,25 +130,27 @@ class OrderService
             foreach ($cart->items as $cartItem) {
                 $variant = $cartItem->productVariant;
 
-                //  ['Color' => 'Red', 'Size' => 'M']
+                $orderItemData = [
+                    'product_id' => $cartItem->product_id,
+                    'product_variant_id' => $cartItem->product_variant_id,
+                    'product_quantity' => $cartItem->quantity,
+                    'product_name' => $cartItem->product->getTranslations('name'),
+                    'product_price' => $variant ? $variant->price : $cartItem->product->getPriceAfterDiscount(),
+                ];
 
-                $variantData = [];
                 if ($variant) {
+                    $variantData = [];
                     foreach (['ar','en'] as $lang){
                         $variantData[$lang] = $variant->attributeValues->mapWithKeys(function ($attributeValue) use ($lang) {
                             return [$attributeValue->attribute->getTranslation('name', $lang) => $attributeValue->getTranslation('value', $lang)];
                         })->toArray();
                     }
+
+                    // نرسل المواصفات للمتغير فقط؛ المنتج العادي يترك العمود NULL في قاعدة البيانات.
+                    $orderItemData['data'] = $variantData;
                 }
 
-                $order->items()->create([
-                    'product_id' => $cartItem->product_id,
-                    'product_variant_id' => $cartItem->product_variant_id,
-                    'product_quantity' => $cartItem->quantity,
-                    'product_name' => $cartItem->product->getTranslations('name'),
-                    'product_price' => $cartItem->productVariant ? $cartItem->productVariant->price : $cartItem->product->getPriceAfterDiscount(),
-                    'data' => $cartItem->productVariant ? $variantData : null,
-                ]);
+                $order->items()->create($orderItemData);
             }
             // delete cart items and coupon after order is created
             
@@ -241,7 +243,7 @@ class OrderService
         });
     }
 
-    private function decreaseOrderStock(Order $order): void
+    public function decreaseOrderStock(Order $order): void
     {
         $items = $order->items()->orderBy('product_id')->orderBy('id')->lockForUpdate()->get();
         if ($items->isEmpty()) {

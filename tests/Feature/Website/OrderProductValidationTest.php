@@ -48,6 +48,9 @@ class OrderProductValidationTest extends TestCase
 
         $this->assertEquals(300, $order->price);
         $this->assertDatabaseHas('order_items', ['order_id' => $order->id, 'product_price' => 150, 'product_quantity' => 2]);
+        $savedItem = $order->items()->first();
+        $this->assertNull($savedItem->getRawOriginal('data'));
+        $this->assertNull($savedItem->data);
         $this->assertDatabaseCount('cart_items', 0);
         $this->assertEquals(2, $product->fresh()->quantity);
     }

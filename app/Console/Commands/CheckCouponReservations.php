@@ -12,7 +12,7 @@ class CheckCouponReservations extends Command
 {
     protected $signature = 'orders:check-coupon-reservations {--order= : Check one order only}';
 
-    protected $description = 'Check gateway payments before releasing expired coupon reservations';
+    protected $description = 'Check payments for expired pending orders and release unpaid coupon reservations';
 
     public function handle(OrderPaymentService $paymentService): int
     {
@@ -26,7 +26,7 @@ class CheckCouponReservations extends Command
             }
             $query->whereKey($orderId);
         } else {
-            $query->where('status', 'pending')->where('coupon_usage_status', 'reserved')
+            $query->where('status', 'pending')
                 ->whereNull('payment_review_reason')
                 ->where('payment_expires_at', '<=', now());
         }
@@ -40,10 +40,10 @@ class CheckCouponReservations extends Command
                 } catch (Throwable $exception) {
                     // نكمل باقي الطلبات، ولا نطبع بيانات بوابة الدفع أو المفاتيح.
                     $failed = true;
-                    Log::warning('Coupon reservation payment check failed.', [
+                    Log::warning('Order payment review failed.', [
                         'order_id' => $order->id, 'exception_type' => get_class($exception),
                     ]);
-                    $this->warn("Order {$order->id}: check failed; reservation unchanged.");
+                    $this->warn("Order {$order->id}: check failed; order unchanged.");
                 }
             }
         });

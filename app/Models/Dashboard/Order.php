@@ -2,6 +2,7 @@
 
 namespace App\Models\Dashboard;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -20,6 +21,11 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class, 'order_id');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'order_id');
     }
 
     public function user()

@@ -82,6 +82,13 @@
             </li>
             @endcan
 
+            {{-- الطلبات (Orders) --}}
+            @can('orders')
+            <li class="nav-item">
+                <a href="{{ route('dashboard.orders.index') }}"><i class="la la-file-text-o"></i><span class="menu-title">{{ __('sidebar.orders') }}</span></a>
+            </li>
+            @endcan
+
             {{-- الكوبونات (Coupons) --}}
             @can('coupons')
             <li class="nav-item">
