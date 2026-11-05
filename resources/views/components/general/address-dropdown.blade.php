@@ -10,18 +10,38 @@ new class extends Component {
     public $country_id = null;
     public $governorate_id = null;
     public $city_id = null;
+    public bool $includeShipping = false;
 
     // إعادة ضبط الحقول عند تغيير الدولة
     public function updatedCountryId()
     {
         $this->governorate_id = null;
         $this->city_id = null;
+
+        if ($this->includeShipping) {
+            $this->dispatch('shipping_price_updated', shippingPrice: 0);
+        }
     }
 
     // إعادة ضبط الحقول عند تغيير المحافظة
     public function updatedGovernorateId()
     {
         $this->city_id = null;
+
+        if (! $this->includeShipping) {
+            return;
+        }
+
+        $governorate = Governorate::query()
+            ->where('id', $this->governorate_id)
+            ->where('country_id', $this->country_id)
+            ->where('status', 1)
+            ->with('shippingGovernorate')
+            ->first();
+
+        $shippingPrice = (float) ($governorate?->shippingGovernorate?->price ?? 0);
+
+        $this->dispatch('shipping_price_updated', shippingPrice: $shippingPrice);
     }
 
     // جلب البيانات بناءً على الاختيارات

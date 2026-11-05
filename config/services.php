@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'myfatoorah' => [
+        'token' => env('MYFATOORAH_TOKEN'),
+        'base_url' => env('MYFATOORAH_BASE_URL', 'https://apitest.myfatoorah.com'),
+        'currency' => env('MYFATOORAH_CURRENCY', 'EGP'),
+        'callback_url' => env('MYFATOORAH_CALLBACK_URL'),
+    ],
 
     /*
     |--------------------------------------------------------------------------

@@ -19,19 +19,15 @@ class CartService
                 'items.product.brand',
                 'items.product.images',
                 'items.productVariant.images',
-                'items.productVariant.attributeValues',
+                'items.productVariant.attributeValues.attribute',
             ])
             ->first();
 
         return $cart?->items ?? collect();
     }
 
-    public function add(
-        int $userId,
-        int $productId,
-        ?int $variantId,
-        int $quantity
-    ): array {
+    public function add(int $userId, int $productId, ?int $variantId, int $quantity): array
+    {
         if ($quantity < 1) {
             throw new DomainException(__('website.invalid_cart_quantity'));
         }
@@ -109,11 +105,7 @@ class CartService
             $item = $this->ownedItem($userId, $cartItemId, true);
             $newQuantity = $item->quantity + 1;
 
-            $this->ensureStockIsAvailable(
-                $item->product,
-                $item->productVariant?->stock,
-                $newQuantity
-            );
+            $this->ensureStockIsAvailable($item->product, $item->productVariant?->stock, $newQuantity);
 
             $item->update(['quantity' => $newQuantity]);
 
@@ -164,11 +156,8 @@ class CartService
         return $item;
     }
 
-    private function ensureStockIsAvailable(
-        Product $product,
-        ?int $variantStock,
-        int $requestedQuantity
-    ): void {
+    private function ensureStockIsAvailable(Product $product, ?int $variantStock, int $requestedQuantity): void
+    {
         if (! $product->status || ! $product->available_in_stock) {
             throw new DomainException(__('website.product_not_available'));
         }
