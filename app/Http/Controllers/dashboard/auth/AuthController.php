@@ -30,9 +30,9 @@ class AuthController extends Controller
         $remember = $request->has('remember');
         if (auth('admin')->attempt(['email' => $credentials['email'], 'password' => $credentials['password']], true)) {
             return redirect()->route('dashboard.welcome');
-        } else {
-            dd('failed');
         }
+
+        return back()->withInput($request->only('email'))->withErrors(['email' => __('auth.failed')]);
     }
 
     public function showRecoverPassword()

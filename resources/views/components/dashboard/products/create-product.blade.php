@@ -77,8 +77,6 @@ new class extends Component {
                 'available_for' => ['nullable', 'date'],
             ]);
         } elseif ($this->currentStep == 2) {
-            // die dump every thing
-            // dd($this);
             $rules = [
                 'sku' => ['required', 'string', 'max:50', 'unique:products,sku'],
                 'has_variants' => ['required', 'in:0,1'],

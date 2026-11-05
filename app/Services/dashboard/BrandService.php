@@ -95,7 +95,6 @@ class BrandService
     public function toggleStatus($id)
     {
         $brand = $this->brandRepo->findById($id);
-        // dd($brand->getRawOriginal('status'));
         $current_status = $brand->getRawOriginal('status');
         $updated = $this->brandRepo->update($brand, ['status' => !$current_status]);
 
