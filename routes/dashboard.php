@@ -7,6 +7,7 @@ use App\Http\Controllers\Dashboard\BrandController;
 use App\Http\Controllers\dashboard\CategoriesController;
 use App\Http\Controllers\dashboard\ContactsController;
 use App\Http\Controllers\dashboard\CouponController;
+use App\Http\Controllers\dashboard\OrderController;
 use App\Http\Controllers\dashboard\FaqController;
 use App\Http\Controllers\dashboard\PagesController;
 use App\Http\Controllers\dashboard\ProductsController;
@@ -41,6 +42,11 @@ Route::group(
     
         Route::group(['middleware' => ['auth:admin']], function () {
             Route::get('/welcome', [WelcomeController::class, 'index'])->name('welcome');
+            Route::get('/orders', [OrderController::class, 'index'])->name('orders.index')->middleware('can:orders');
+            Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show')->middleware('can:orders');
+            Route::patch('/orders/{id}/deliver', [OrderController::class, 'markDelivered'])->name('orders.deliver')->middleware('can:orders');
+            Route::patch('/orders/{id}/recheck-stock', [OrderController::class, 'recheckOrderStock'])->name('orders.recheck-stock')->middleware('can:orders');
+            Route::patch('/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel')->middleware('can:orders');
             Route::prefix('roles')->middleware('can:roles')->group(function () {
 
                 Route::get('/', [RolesController::class, 'index'])->name('roles.index');

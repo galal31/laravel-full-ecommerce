@@ -41,14 +41,14 @@ class OrderPaymentReconciliationTest extends TestCase
         $this->fakeInvoice($order, $status, $attempts);
 
         $this->assertSame('released', $this->check($order));
-        $this->assertSame('skipped', $this->check($order));
+        $this->assertSame('unpaid', $this->check($order));
         $this->assertSame('released', $order->fresh()->coupon_usage_status);
         $this->assertSame('pending', $order->fresh()->status);
         $this->assertEquals(0, $coupon->fresh()->reserved_uses);
         $this->assertEquals(3, $coupon->fresh()->times_used);
         $this->assertEquals(5, $product->fresh()->quantity);
         $this->assertEquals(180, $order->fresh()->total_price);
-        Http::assertSentCount(1);
+        Http::assertSentCount(2);
     }
 
     public static function unpaidInvoices(): array
@@ -69,6 +69,59 @@ class OrderPaymentReconciliationTest extends TestCase
         $this->assertSame('waiting', $this->check($order));
         $this->assertEquals(1, $coupon->fresh()->reserved_uses);
         Http::assertNothingSent();
+    }
+
+    #[DataProvider('expiredReviewDeadlines')]
+    public function test_payment_review_starts_at_expiry_without_extra_wait(int $secondsSinceExpiry): void
+    {
+        [$order, $coupon, $product] = $this->order();
+        $deadline = now()->subSeconds($secondsSinceExpiry);
+        $order->update(['payment_expires_at' => $deadline]);
+        $order->transactions()->update(['invoice_expires_at' => $deadline]);
+
+        $this->fakeInvoice($order);
+        $this->artisan('orders:check-coupon-reservations', ['--order' => $order->id])
+            ->expectsOutput("Order {$order->id}: released")->assertSuccessful();
+        $this->assertSame('pending', $order->fresh()->status);
+        $this->assertSame('released', $order->fresh()->coupon_usage_status);
+        $this->assertEquals(0, $coupon->fresh()->reserved_uses);
+        $this->assertEquals(5, $product->fresh()->quantity);
+        Http::assertSentCount(1);
+    }
+
+    public static function expiredReviewDeadlines(): array
+    {
+        return [
+            'just expired' => [0],
+            'one second ago' => [1],
+            'less than thirty minutes' => [1799],
+            'exactly thirty minutes' => [1800],
+        ];
+    }
+
+    public function test_scheduled_review_checks_no_coupon_orders_at_expiry_and_skips_future_deadlines(): void
+    {
+        $orders = [];
+        foreach ([-1, 0] as $secondsSinceExpiry) {
+            [$order] = $this->order(false);
+            $deadline = now()->subSeconds($secondsSinceExpiry);
+            $order->update(['payment_expires_at' => $deadline]);
+            $order->transactions()->update(['invoice_expires_at' => $deadline]);
+            $orders[$secondsSinceExpiry] = $order;
+        }
+        $dueOrder = $orders[0];
+        $this->fakePaid($dueOrder);
+
+        $this->artisan('orders:check-coupon-reservations')
+            ->expectsOutput("Order {$dueOrder->id}: paid")
+            ->doesntExpectOutput("Order {$orders[-1]->id}: waiting")
+            ->assertSuccessful();
+
+        $this->assertSame('completed', $dueOrder->fresh()->status);
+        $this->assertSame('pending', $orders[-1]->fresh()->status);
+        $this->assertNull($dueOrder->fresh()->coupon_usage_status);
+        $this->assertDatabaseHas('transactions', ['order_id' => $dueOrder->id, 'transaction_id' => '456']);
+        Http::assertSentCount(2);
     }
 
     public function test_deadline_migration_backfills_existing_orders_and_requires_a_value(): void
@@ -132,6 +185,110 @@ class OrderPaymentReconciliationTest extends TestCase
         $this->assertEquals(3, $product->fresh()->quantity);
         $this->assertDatabaseHas('transactions', ['order_id' => $order->id, 'transaction_id' => '456']);
         Http::assertSentCount(2);
+    }
+
+    public function test_paid_order_without_coupon_is_completed_once_without_coupon_changes(): void
+    {
+        [$order, , $product] = $this->order(false);
+        $this->fakePaid($order);
+
+        $this->assertSame('paid', $this->check($order));
+        $this->assertSame('skipped', $this->check($order));
+        $this->assertSame('completed', $order->fresh()->status);
+        $this->assertNull($order->fresh()->coupon_usage_status);
+        $this->assertNull($order->fresh()->payment_review_reason);
+        $this->assertEquals(3, $product->fresh()->quantity);
+        $this->assertDatabaseCount('coupons', 0);
+        $this->assertDatabaseHas('transactions', ['order_id' => $order->id, 'transaction_id' => '456']);
+        Http::assertSentCount(2);
+    }
+
+    public function test_unpaid_order_without_coupon_is_reported_without_changing_business_data(): void
+    {
+        [$order, , $product] = $this->order(false);
+        $before = $order->fresh()->getAttributes();
+        $this->fakeInvoice($order);
+
+        $this->artisan('orders:check-coupon-reservations')
+            ->expectsOutput("Order {$order->id}: unpaid")->assertSuccessful();
+        $this->assertSame('unpaid', $this->check($order));
+        $this->assertSame($before, $order->fresh()->getAttributes());
+        $this->assertEquals(5, $product->fresh()->quantity);
+        $this->assertDatabaseCount('coupons', 0);
+        $this->assertDatabaseHas('transactions', ['order_id' => $order->id, 'transaction_id' => null]);
+        Http::assertSentCount(2);
+    }
+
+    public function test_paid_order_with_released_coupon_can_be_completed_when_capacity_is_available(): void
+    {
+        [$order, $coupon, $product] = $this->order();
+        $order->update(['coupon_usage_status' => 'released']);
+        $coupon->update(['reserved_uses' => 0]);
+        $this->fakePaid($order);
+
+        $this->assertSame('paid', $this->check($order));
+        $this->assertSame('skipped', $this->check($order));
+        $this->assertSame('completed', $order->fresh()->status);
+        $this->assertSame('used', $order->fresh()->coupon_usage_status);
+        $this->assertEquals(4, $coupon->fresh()->times_used);
+        $this->assertEquals(0, $coupon->fresh()->reserved_uses);
+        $this->assertEquals(3, $product->fresh()->quantity);
+        Http::assertSentCount(2);
+    }
+
+    public function test_paid_order_with_unavailable_released_coupon_records_payment_and_requires_review(): void
+    {
+        [$order, $coupon, $product] = $this->order();
+        $order->update(['coupon_usage_status' => 'released']);
+        $coupon->update(['reserved_uses' => 0, 'times_used' => 4]);
+        $this->fakePaid($order);
+
+        $this->assertSame('review', $this->check($order));
+        $this->assertSame('skipped', $this->check($order));
+        $this->assertSame('pending', $order->fresh()->status);
+        $this->assertSame('coupon_unavailable', $order->fresh()->payment_review_reason);
+        $this->assertSame('released', $order->fresh()->coupon_usage_status);
+        $this->assertEquals(4, $coupon->fresh()->times_used);
+        $this->assertEquals(0, $coupon->fresh()->reserved_uses);
+        $this->assertEquals(5, $product->fresh()->quantity);
+        $this->assertDatabaseHas('transactions', ['order_id' => $order->id, 'transaction_id' => '456']);
+        Http::assertSentCount(2);
+    }
+
+    public function test_recorded_payment_without_coupon_requires_review_without_fulfilling(): void
+    {
+        [$order, , $product] = $this->order(false);
+        $order->transactions()->update(['transaction_id' => '456']);
+
+        $this->artisan('orders:check-coupon-reservations')
+            ->expectsOutput("Order {$order->id}: review")->assertSuccessful();
+        $this->assertSame('pending', $order->fresh()->status);
+        $this->assertSame('payment_recorded_order_pending', $order->fresh()->payment_review_reason);
+        $this->assertNull($order->fresh()->coupon_usage_status);
+        $this->assertEquals(5, $product->fresh()->quantity);
+        Http::assertNothingSent();
+    }
+
+    #[DataProvider('manualReviewReasons')]
+    public function test_orders_under_manual_review_are_not_retried_automatically(string $reason): void
+    {
+        [$order, , $product] = $this->order(false);
+        $order->update(['payment_review_reason' => $reason]);
+        $before = $order->fresh()->getAttributes();
+
+        $this->assertSame('skipped', $this->check($order));
+        $this->artisan('orders:check-coupon-reservations')
+            ->doesntExpectOutput("Order {$order->id}: skipped")->assertSuccessful();
+        $this->assertSame($before, $order->fresh()->getAttributes());
+        $this->assertEquals(5, $product->fresh()->quantity);
+        Http::assertNothingSent();
+    }
+
+    public static function manualReviewReasons(): array
+    {
+        return [
+            ['stock_unavailable'], ['coupon_unavailable'], ['payment_recorded_order_pending'],
+        ];
     }
 
     #[DataProvider('mismatchedPayments')]
@@ -356,7 +513,7 @@ class OrderPaymentReconciliationTest extends TestCase
         }
     }
 
-    public function test_command_continues_after_one_invoice_fails_and_only_selects_due_reservations(): void
+    public function test_command_continues_after_one_invoice_fails_and_only_selects_due_orders(): void
     {
         [$failedOrder, $failedCoupon] = $this->order();
         [$releasedOrder, $releasedCoupon] = $this->order();
@@ -378,7 +535,7 @@ class OrderPaymentReconciliationTest extends TestCase
         });
 
         $this->artisan('orders:check-coupon-reservations')
-            ->expectsOutput("Order {$failedOrder->id}: check failed; reservation unchanged.")
+            ->expectsOutput("Order {$failedOrder->id}: check failed; order unchanged.")
             ->expectsOutput("Order {$releasedOrder->id}: released")->assertFailed();
         $this->assertEquals(1, $failedCoupon->fresh()->reserved_uses);
         $this->assertEquals(0, $releasedCoupon->fresh()->reserved_uses);
@@ -441,17 +598,17 @@ class OrderPaymentReconciliationTest extends TestCase
         return ['IsSuccess' => true, 'Data' => [
             'Invoice' => ['Id' => (string) $order->id, 'Status' => 'PAID'],
             'Transaction' => ['Id' => '456', 'Status' => 'SUCCESS', 'PaymentId' => '07001'],
-            'Amount' => ['DisplayCurrency' => 'EGP', 'ValueInDisplayCurrency' => 180],
+            'Amount' => ['DisplayCurrency' => 'EGP', 'ValueInDisplayCurrency' => $order->total_price],
         ]];
     }
 
-    private function order(): array
+    private function order(bool $withCoupon = true): array
     {
-        $coupon = Coupon::create([
+        $coupon = $withCoupon ? Coupon::create([
             'code' => uniqid('SAVE'), 'discount_percentage' => 10,
             'start_date' => now()->subDay()->toDateString(), 'expire_date' => now()->addDay()->toDateString(),
             'limit' => 4, 'times_used' => 3, 'reserved_uses' => 1, 'is_active' => true,
-        ]);
+        ]) : null;
         $category = Category::create(['name' => ['en' => uniqid('Category')], 'slug' => uniqid('category-')]);
         $product = Product::create([
             'category_id' => $category->id, 'name' => ['ar' => 'منتج', 'en' => 'Product'],
@@ -460,9 +617,9 @@ class OrderPaymentReconciliationTest extends TestCase
         $order = Order::create([
             'user_id' => User::factory()->create()->id, 'user_name' => 'Test',
             'user_phone' => '01000000000', 'user_email' => 'test@example.test',
-            'price' => 200, 'shipping_price' => 0, 'total_price' => 180, 'note' => '',
+            'price' => 200, 'shipping_price' => 0, 'total_price' => $withCoupon ? 180 : 200, 'note' => '',
             'status' => 'pending', 'country' => 'Egypt', 'governorate' => 'Cairo', 'city' => 'Cairo', 'street' => 'Test',
-            'coupon_id' => $coupon->id, 'coupon_code' => $coupon->code, 'coupon_usage_status' => 'reserved',
+            'coupon_id' => $coupon?->id, 'coupon_code' => $coupon?->code, 'coupon_usage_status' => $withCoupon ? 'reserved' : null,
             'payment_expires_at' => now(),
         ]);
         $order->items()->create([

@@ -11,35 +11,11 @@ use App\Http\Controllers\website\ProductController;
 use App\Http\Controllers\website\WishlistController;
 use App\Models\Page;
 use App\Services\dashboard\FaqService;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
-if (! defined('myFatoorahToken')) {
-    define('myFatoorahToken', config('services.myfatoorah.token'));
-}
 Route::group(['as' => 'payment.', 'prefix' => 'payment'], function () {
-    Route::get('/test', function () {
-
-        $payload = [
-
-            'Order' => [
-                'Amount' => 100,
-                'Currency' => 'EGP',
-            ],
-            'IntegrationUrls' => [
-                'Redirection' => config('services.myfatoorah.callback_url'),
-            ],
-        ];
-
-        $response = Http::withToken(myFatoorahToken)
-            ->post('https://apitest.myfatoorah.com/v3/payments', $payload);
-
-        return $response->json();
-    });
-
     Route::get('/callback', [CheckoutController::class, 'callback'])->name('callback');
-
 });
 Route::group(
     [

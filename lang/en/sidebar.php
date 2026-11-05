@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'orders' => 'Orders',
     'roles'               => 'Roles',
     'manage_roles'        => 'Manage Roles',
     'admins'              => 'Admins',

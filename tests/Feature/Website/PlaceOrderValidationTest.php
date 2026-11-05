@@ -2,7 +2,10 @@
 
 namespace Tests\Feature\Website;
 
+use App\Models\Dashboard\Order;
 use App\Models\User;
+use App\Services\website\MyFatoorahService;
+use App\Services\website\OrderService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter;
@@ -13,7 +16,7 @@ class PlaceOrderValidationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_place_order_validates_customer_address_and_returns_the_governorate_id(): void
+    public function test_place_order_validates_customer_address_before_creating_the_order(): void
     {
         $this->withoutMiddleware([
             LocaleSessionRedirect::class,
@@ -40,9 +43,15 @@ class PlaceOrderValidationTest extends TestCase
             'city_id' => $cityId,
         ];
 
+        $order = new Order;
+        $this->mock(OrderService::class)->shouldReceive('createOrder')->once()
+            ->withArgs(fn (array $validated) => $validated['governorate_id'] === $governorateId)
+            ->andReturn($order);
+        $this->mock(MyFatoorahService::class)->shouldReceive('createInvoice')->once()
+            ->with($order)->andReturn(['payment_url' => 'https://payment.example.test']);
+
         $this->post(route('website.checkout.place-order'), $data)
-            ->assertOk()
-            ->assertJsonPath('governorate_id', $governorateId);
+            ->assertRedirect('https://payment.example.test');
 
         $this->post(route('website.checkout.place-order'), [
             ...$data,
