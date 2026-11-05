@@ -72,7 +72,7 @@ new class extends Component {
         $this->quantity = $product->quantity;
         
         $this->has_variants = $product->variants->isNotEmpty() ? 1 : 0;
-        $this->manage_stock = (bool) $product->manage_stock;
+        $this->manage_stock = (int) $product->manage_stock;
         
         $this->has_discount = $product->discount !== null ? 1 : 0;
         $this->discount_percentage = $product->discount;
