@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
+        channels: __DIR__.'/../routes/channels.php',
         web: [__DIR__ . '/../routes/web.php',__DIR__ . '/../routes/dashboard.php'],
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'localeSessionRedirect' => \Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect::class,
             'localeCookieRedirect' => \Mcamara\LaravelLocalization\Middleware\LocaleCookieRedirect::class,
             'localeViewPath' => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath::class,
+            'markNotificationAsRead' => \App\Http\Middleware\MarkNotificationAsRead::class,
         ])->redirectGuestsTo(function(Request $request) {
             if($request->is('*/dashboard/*')) {
                 return route('dashboard.login');

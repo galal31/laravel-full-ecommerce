@@ -58,6 +58,7 @@ return [
     'no_transactions' => 'No payment transactions are saved for this order.',
     'coupon_states' => ['reserved' => 'Reserved', 'used' => 'Confirmed use', 'released' => 'Reservation released'],
     'title' => 'Orders',
+    'order_paid' => 'Order :id paid',
     'number' => 'Order number',
     'customer' => 'Customer name',
     'phone' => 'Phone',

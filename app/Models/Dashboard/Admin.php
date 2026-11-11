@@ -23,6 +23,8 @@ class Admin extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
+    
+
     public function hasPermission($permession){
         $role = $this->role;
         // نلف علي صلاحياته لو البيرميشن فيها يرجع ترو

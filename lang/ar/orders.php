@@ -58,6 +58,7 @@ return [
     'no_transactions' => 'لا توجد معاملات دفع محفوظة لهذا الطلب.',
     'coupon_states' => ['reserved' => 'محجوز', 'used' => 'استخدام مؤكد', 'released' => 'تم تحرير الحجز'],
     'title' => 'قائمة الطلبات',
+    'order_paid' => 'تم دفع الطلب :id',
     'number' => 'رقم الطلب',
     'customer' => 'اسم العميل',
     'phone' => 'الهاتف',

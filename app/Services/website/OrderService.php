@@ -2,6 +2,7 @@
 
 namespace App\Services\website;
 
+use App\Models\Dashboard\Admin;
 use App\Models\Dashboard\City;
 use App\Models\Dashboard\Order;
 use App\Models\Dashboard\Product;
@@ -220,7 +221,11 @@ class OrderService
 
                 $order->update(['status' => 'completed', 'payment_review_reason' => null]);
             }
-
+            // send notification to admins
+            $admins = Admin::all();
+            foreach ($admins as $admin) {
+                $admin->notify(new \App\Notifications\PaidOrderNotification($order));
+            }
             return $order;
         });
     }
