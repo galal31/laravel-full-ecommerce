@@ -12,7 +12,15 @@ new class extends Component {
 
     public function mount()
     {
-        $this->contact = Contact::with('user')->latest()->first();
+        $contactId = Request()->query('contact_id');
+        if (intval($contactId)) {
+            $this->contact = Contact::with('user')->find($contactId);
+            
+
+        } else {
+            $this->contact = Contact::with('user')->latest()->first();
+        }
+
     }
 
     // listeners

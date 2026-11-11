@@ -15,7 +15,17 @@ new class extends Component {
 
     public function mount()
     {
-        $this->selectedContactId = Contact::latest()->value('id');
+        if (Request()->query('contact_id')) {
+            $contact = Contact::select('id','is_read')->find(Request()->query('contact_id'));
+            if ($contact) {
+                $this->selectedContactId = $contact->id;
+                $contact->update([
+                    'is_read' => 1,
+                ]);
+            }
+        }else{
+            $this->selectedContactId = Contact::select('id')->latest()->value('id');
+        }
     }
     // listeners
     #[On('showMessagesOf')]
@@ -42,11 +52,6 @@ new class extends Component {
     public function selectContact($id)
     {
         $this->selectedContactId = $id;
-
-        Contact::where('id', $id)->update([
-            'is_read' => 1,
-        ]);
-
         $this->dispatch('contactSelected', contactId: $id);
     }
 };

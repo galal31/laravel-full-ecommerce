@@ -2,15 +2,16 @@
 
 namespace App\Providers;
 
-use App\Models\Page;
 use App\Models\Dashboard\Admin;
+use App\Models\dashboard\Contact;
 use App\Models\Dashboard\Role;
 use App\Models\Dashboard\Setting;
+use App\Models\Page;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -63,13 +64,37 @@ class AppServiceProvider extends ServiceProvider
                         'favicon' => 'favicon.png',
                     ]
                 );
+
                 return $settings;
             });
 
             $view->with(['settings' => $settings]);
-
         });
+        View::composer('layouts.dashboard.partials.navbar', function ($view) {
+            $currentAdmin = auth('admin')->user();
+            // dd(Gate::allows('contact'));
+            if (! $currentAdmin || ! $currentAdmin->hasPermission('notifications')) {
+                $unreadCount = 0;
+                $adminNotifications = collect();
+            } else {
+                $unreadCount = $currentAdmin ? $currentAdmin->unreadNotifications()->count() : 0;
+                $adminNotifications = $currentAdmin ? $currentAdmin->notifications()->latest()->take(10)->get() : collect();
+            }
+            if (! $currentAdmin || ! $currentAdmin->hasPermission('contact')) {
+                $unreadContactCount = 0;
+                $adminContacts = collect();
+            }else{
+                $unreadContactCount = Contact::where('is_read', 0)->count();
+                $adminContacts = Contact::latest()->take(10)->get();
+            }
 
+            $view->with([
+                'unreadCount' => $unreadCount,
+                'adminNotifications' => $adminNotifications,
+                'unreadContactCount' => $unreadContactCount,
+                'adminContacts' => $adminContacts,
+            ]);
+        });
 
         // DEFINE THE GATES
         $config_permissions = array_keys(config('permissions'));

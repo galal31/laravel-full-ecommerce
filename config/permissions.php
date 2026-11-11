@@ -27,5 +27,5 @@ return [
     'socials'      => 'Manage Socials',
     'menus'        => 'Manage Menus',
     'attributes'   => 'Manage Attributes',
-
+    'notifications'=> 'Manage Notifications',
 ];

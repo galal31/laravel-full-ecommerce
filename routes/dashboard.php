@@ -40,7 +40,7 @@ Route::group(
 
         ######################## authentication routes ########################
     
-        Route::group(['middleware' => ['auth:admin']], function () {
+        Route::group(['middleware' => ['auth:admin', 'markNotificationAsRead']], function () {
             Route::get('/welcome', [WelcomeController::class, 'index'])->name('welcome');
             Route::get('/orders', [OrderController::class, 'index'])->name('orders.index')->middleware('can:orders');
             Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show')->middleware('can:orders');
@@ -121,7 +121,7 @@ Route::group(
             ### end users routes ###
     
             ### start contacts routes ###
-            Route::get('/contacts', [ContactsController::class, 'index'])->name('contacts.index');
+            Route::get('/contacts', [ContactsController::class, 'index'])->middleware('can:contact')->name('contacts.index');
             ### end contacts routes ###
             ### start slider management routes ###
     

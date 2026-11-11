@@ -2,6 +2,7 @@
 
 use App\Models\dashboard\Contact;
 use Livewire\Component;
+use App\Events\FaqSentEvent;
 
 new class extends Component
 {
@@ -34,7 +35,6 @@ new class extends Component
         ];
     }
 
-    // wire:model.blur يحدث الخاصية عند مغادرة الحقل، ثم نتحقق من هذا الحقل فقط.
     public function updated(string $property)
     {
         $this->validateOnly($property);
@@ -44,10 +44,11 @@ new class extends Component
     {
         $validated = $this->validate();
 
-        Contact::create([
+        $contact = Contact::create([
             ...$validated,
             'user_id' => auth()->id(),
         ]);
+        FaqSentEvent::dispatch($contact);
 
         // بعد الحفظ نفرغ الحقول ونزيل رسائل التحقق القديمة.
         $this->reset('name', 'email', 'phone', 'subject', 'message');
@@ -250,7 +251,7 @@ new class extends Component
                         <input
                             type="text"
                             id="contact_name"
-                            wire:model.blur="name"
+                            wire:model.lazy="name"
                             @error('name') class="is-invalid" @enderror
                             placeholder="{{ __('faqs.contact_name_placeholder') }}"
                             autocomplete="name"
@@ -264,7 +265,7 @@ new class extends Component
                         <label for="contact_email">{{ __('faqs.contact_email') }}</label>
                         <input
                             id="contact_email"
-                            wire:model.blur="email"
+                            wire:model.lazy="email"
                             @error('email') class="is-invalid" @enderror
                             placeholder="{{ __('faqs.contact_email_placeholder') }}"
                             autocomplete="email"
@@ -280,7 +281,7 @@ new class extends Component
                         <input
                             type="tel"
                             id="contact_phone"
-                            wire:model.blur="phone"
+                            wire:model.lazy="phone"
                             @error('phone') class="is-invalid" @enderror
                             placeholder="{{ __('faqs.contact_phone_placeholder') }}"
                             autocomplete="tel"
@@ -296,7 +297,7 @@ new class extends Component
                         <input
                             type="text"
                             id="contact_subject"
-                            wire:model.blur="subject"
+                            wire:model.lazy="subject"
                             @error('subject') class="is-invalid" @enderror
                             placeholder="{{ __('faqs.contact_subject_placeholder') }}"
                         >
@@ -309,7 +310,7 @@ new class extends Component
                         <label for="contact_message">{{ __('faqs.contact_message') }}</label>
                         <textarea
                             id="contact_message"
-                            wire:model.blur="message"
+                            wire:model.lazy="message"
                             @error('message') class="is-invalid" @enderror
                             placeholder="{{ __('faqs.contact_message_placeholder') }}"
                         ></textarea>
