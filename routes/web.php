@@ -86,6 +86,8 @@ Route::group(
         | المستخدم لازم يكون عامل login
         */
         Route::middleware('auth:web')->group(function () {
+            Route::view('/profile', 'website.profile')->name('profile');
+
             Route::get('/cart', [CartController::class, 'index'])
                 ->name('cart.index');
 

@@ -3,6 +3,7 @@
 namespace App\Services\website;
 
 use App\Reposetories\website\HomeRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 
 class HomeService
@@ -10,6 +11,14 @@ class HomeService
     public function __construct(
         private HomeRepository $homeRepository
     ) {}
+
+    public function getCategories(): Collection
+    {
+        return Cache::rememberForever(
+            'home_categories',
+            fn () => $this->homeRepository->getActiveParentCategories()
+        );
+    }
 
     public function getHomeData(string $searchQuery = ''): array
     {
@@ -26,10 +35,7 @@ class HomeService
                 'sliders',
                 fn () => $this->homeRepository->getSliders()
             ),
-            'categories' => Cache::rememberForever(
-                'home_categories',
-                fn () => $this->homeRepository->getActiveParentCategories()
-            ),
+            'categories' => $this->getCategories(),
             'brands' => Cache::rememberForever(
                 'home_brands',
                 fn () => $this->homeRepository->getActiveBrands()

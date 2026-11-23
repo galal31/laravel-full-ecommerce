@@ -2,6 +2,7 @@
 
 return [
     'account' => 'Account',
+    'my_account' => 'My account',
     'track_order' => 'Track Order',
     'support' => 'Support',
     'need_help_call_us' => 'Need help? Call us:',

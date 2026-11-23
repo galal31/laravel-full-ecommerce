@@ -7,6 +7,7 @@ use App\Models\dashboard\Contact;
 use App\Models\Dashboard\Role;
 use App\Models\Dashboard\Setting;
 use App\Models\Page;
+use App\Services\website\HomeService;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
@@ -30,7 +31,11 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrapFive();
 
-        View::composer(['layouts.website.user.header', 'website.home-parts.footer'], function ($view) {
+        View::composer('website.home-parts.header', function ($view) {
+            $view->with('headerCategories', app(HomeService::class)->getCategories());
+        });
+
+        View::composer('website.home-parts.footer', function ($view) {
             $pages = Page::query()
                 ->select(['title', 'slug'])
                 ->orderBy('title')

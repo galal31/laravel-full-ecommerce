@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
+<html class="storefront-header" lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,6 +8,7 @@
     <title>@yield('title', __('home.page_title'))</title>
     <link rel="icon" href="{{ asset('website-assets/assets/images/homepage-one/icon.png') }}">
     <link rel="stylesheet" href="{{ asset('website-assets/css/store-home.css') }}">
+    <link rel="stylesheet" href="{{ asset('website-assets/css/store-header.css') }}">
     <script src="{{ asset('website-assets/assets/js/store-home.js') }}" defer></script>
 </head>
 <body class="store-home" data-login-url="{{ route('website.login') }}"
