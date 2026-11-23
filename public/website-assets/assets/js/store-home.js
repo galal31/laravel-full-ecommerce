@@ -60,6 +60,7 @@
                     other.setAttribute('aria-pressed', String(Boolean(data.added)));
                     other.setAttribute('aria-label', data.added ? page.dataset.removeWishlist : page.dataset.addWishlist);
                 });
+                window.Livewire?.dispatch(data.added ? 'wishlist_item_added' : 'wishlist_item_removed');
                 showMessage(data.message);
             } catch {
                 showMessage(page.dataset.requestFailed);

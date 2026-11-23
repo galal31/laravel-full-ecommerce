@@ -2,6 +2,7 @@
 
 return [
     'account' => 'الحساب',
+    'my_account' => 'حسابي',
     'track_order' => 'تتبع الطلب',
     'support' => 'الدعم',
     'need_help_call_us' => 'تحتاج مساعدة؟ اتصل بنا:',

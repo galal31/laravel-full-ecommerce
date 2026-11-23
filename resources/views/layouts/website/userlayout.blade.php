@@ -1,5 +1,6 @@
 <!doctype html>
 <html
+    class="storefront-header"
     lang="{{ app()->getLocale() }}"
     dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}"
 >
@@ -23,11 +24,12 @@
 <link rel="stylesheet" href="{{ asset('website-assets/css/aos-3.0.0.css') }}">
 
 <link rel="stylesheet" href="{{ asset('website-assets/css/style.css') }}">
+<link rel="stylesheet" href="{{ asset('website-assets/css/store-header.css') }}">
 @stack('styles')
 </head>
 <body>
 
-@include('layouts.website.user.header')
+@include('website.home-parts.header')
 
 <main>
     @yield('content')

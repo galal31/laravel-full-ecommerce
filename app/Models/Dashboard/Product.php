@@ -152,4 +152,8 @@ class Product extends Model
 
         return ! $this->manage_stock || $this->quantity > 0;
     }
+
+    public function orderItems(){
+        return $this->hasMany(OrderItem::class);
+    }
 }
